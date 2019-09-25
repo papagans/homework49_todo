@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block menu %}
+    <li class="nav-item active">
+{#        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo List <span class="sr-only">(current)</span></a>#}
+      </li>
+{% endblock %}
+{% block content %}
+{% for todo in todos %}
+    <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
+  <div class="card-header"><h3>{{ todo.summary}}</h3>
+    <h5 class="card-title">{{ todo.description }}</h5>
+      <h5 class="card-title">Status: {{ todo.status }}</h5>
+      <h5 class="card-title">Type: {{ todo.type }}</h5>
+{#    <p class="card-title"><a href="{% url 'todo_view' todo.pk %}"> Details...</a></p>#}
+  </div>
+</div>
+
+{% endfor %}
+{% endblock %}

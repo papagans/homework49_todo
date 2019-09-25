@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from webapp.views import IndexRedirectView, MyTemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('', IndexRedirectView.as_view(), name='todo_index'),
+    path('', MyTemplateView.as_view(), name='todo_index')
+    # path('', todo_index, name='todo_index')
 ]
