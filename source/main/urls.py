@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webapp.views import IndexRedirectView, MyTemplateView, TodoView, TodoCreateView, TodoUpdateView
+from webapp.views import IndexRedirectView, MyTemplateView, TodoView, TodoCreateView, TodoUpdateView, TodoDeleteView, \
+    StatusView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +25,6 @@ urlpatterns = [
     path('todo/<int:pk>/', TodoView.as_view(), name='todo_view'),
     path('todo/add/', TodoCreateView.as_view(), name='todo_add'),
     path('todo/<int:pk>/update/', TodoUpdateView.as_view(), name='todo_update'),
-    # path('article/<int:pk>/delete/', article_delete_view, name='article_delete'),
+    path('todo/<int:pk>/delete/',  TodoDeleteView.as_view(), name='todo_delete'),
+    path('statuses/', StatusView.as_view(), name='status')
 ]

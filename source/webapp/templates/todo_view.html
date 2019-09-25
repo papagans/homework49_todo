@@ -2,7 +2,7 @@
 {% block title %}{{ todo.summary}}{% endblock %}
 {% block menu %}
     <li><a href="{% url 'todo_update' todo.pk %}">Edit</a></li>
-{#    <li><a href="{% url 'article_delete' todo.pk %}">Delete</a></li>#}
+    <li><a href="{% url 'todo_delete' todo.pk %}">Delete</a></li>
 {% endblock %}
 {% block content %}
    <div class="container">

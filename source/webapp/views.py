@@ -74,4 +74,24 @@ class TodoUpdateView(View):
             return redirect('todo_view', pk=todo.pk)
         else:
             return render(request, 'update.html', context={'form': form,  'todo': todo.pk})
+
+
+class TodoDeleteView(View):
+    def get(self, request, pk):
+        todo = get_object_or_404(Todo, pk=pk)
+        return render(request, 'delete.html', context={'todo': todo})
+
+    def post(self, request, pk):
+        task = get_object_or_404(Todo, pk=pk)
+        task.delete()
+        return redirect('todo_index')
+
+
+class StatusView(TemplateView):
+    template_name = 'status.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status'] = StatusChoice.objects.all()
+        return context
 # Create your views here.
