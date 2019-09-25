@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}{{ todo.summary}}{% endblock %}
+{% block menu %}
+    <li><a href="{% url 'todo_update' todo.pk %}">Edit</a></li>
+{#    <li><a href="{% url 'article_delete' todo.pk %}">Delete</a></li>#}
+{% endblock %}
+{% block content %}
+   <div class="container">
+       <h1>{{ todo.summary }}</h1>
+       <p>Date: <b>{{ todo.date }}<br/></b> Status: <b>{{ todo.status }}</b><br/> Type:<b>{{ todo.type }}</b></p>
+       <div class="pre">Description: {{ todo.description }}</div>
+   </div>
+{% endblock %}
