@@ -94,4 +94,13 @@ class StatusView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['status'] = StatusChoice.objects.all()
         return context
+
+
+class TypeView(TemplateView):
+    template_name = 'type.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['type'] = TypeChoice.objects.all()
+        return context
 # Create your views here.
