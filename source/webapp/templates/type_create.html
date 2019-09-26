@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Create Type{% endblock %}
+{% block content %}
+   <h1>add+</h1>
+   <form method="POST" action="{% url "type_add" %}">
+       {% csrf_token %}
+       {% include 'partial/form.html' with button_text='Create' %}
+   </form>
+{% endblock %}

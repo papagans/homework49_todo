@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Delete Type{% endblock %}
+{% block content %}
+   <h1>Are you sure want to delete type "{{ type.pk }}"?</h1>
+   <form method="POST" action="{% url "type_delete" type.pk %}">
+       {% csrf_token %}
+       {% include 'partial/form.html' with button_text='Delete' %}
+   </form>
+{% endblock %}

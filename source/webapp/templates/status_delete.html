@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Delete Status{% endblock %}
+{% block content %}
+   <h1>Are you sure want to delete status "{{ status.pk }}"?</h1>
+   <form method="POST" action="{% url "status_delete" status.pk %}">
+       {% csrf_token %}
+       {% include 'partial/form.html' with button_text='Delete' %}
+   </form>
+{% endblock %}

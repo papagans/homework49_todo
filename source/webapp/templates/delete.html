@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Delete Product{% endblock %}
+{% block title %}Delete Todo{% endblock %}
 {% block content %}
-   <h1>Are you sure want to delete product "{{ todo.summary }}"?</h1>
+   <h1>Are you sure want to delete Todo "{{ todo.summary }}"?</h1>
    <form method="POST" action="{% url "todo_delete" todo.pk %}">
        {% csrf_token %}
        {% include 'partial/form.html' with button_text='Delete' %}
