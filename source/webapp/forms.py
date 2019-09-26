@@ -10,10 +10,10 @@ class TodoForm(forms.Form):
     status = forms.ModelChoiceField(queryset=StatusChoice.objects.all(), label='Status')
 
 
-# class StatusForm(forms.Form):
-#     status = forms.ModelChoiceField(queryset=StatusChoice.objects.all(), label=None)
+class StatusForm(forms.Form):
+    status = forms.CharField(max_length=50, label=None)
 
 
-# class TypeForm(forms.Form):
-#     type = forms.ModelChoiceField(queryset=TypeChoice.objects.all(), label=None)
+class TypeForm(forms.Form):
+    type = forms.CharField(max_length=50, label=None)
 

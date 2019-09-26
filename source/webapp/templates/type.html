@@ -8,6 +8,7 @@
 {% for types in type %}
     <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
   <div class="card-header"><h3>{{ types.types}}</h3>
+      <p class="card-title"><a href="{% url 'type_view' types.pk %}"> Details...</a></p>
   </div>
 </div>
 

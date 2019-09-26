@@ -1,7 +1,7 @@
 from webapp.models import Todo, StatusChoice, TypeChoice
 from django.views.generic import TemplateView, RedirectView, View
 from django.shortcuts import render, get_object_or_404, redirect
-from webapp.forms import TodoForm
+from webapp.forms import TodoForm, StatusForm
 
 
 class IndexRedirectView(RedirectView):
@@ -87,12 +87,22 @@ class TodoDeleteView(View):
         return redirect('todo_index')
 
 
-class StatusView(TemplateView):
+class StatusesView(TemplateView):
     template_name = 'status.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['status'] = StatusChoice.objects.all()
+        return context
+
+
+class StatusView(TemplateView):
+    template_name = 'status_view.html'
+
+    def get_context_data(self, **kwargs):
+        pk = kwargs.get('pk')
+        context = super().get_context_data(**kwargs)
+        context['status'] = get_object_or_404(StatusChoice, pk=pk)
         return context
 
 
@@ -103,4 +113,53 @@ class TypeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['type'] = TypeChoice.objects.all()
         return context
+
+
+class TypesView(TemplateView):
+    template_name = 'type_view.html'
+
+    def get_context_data(self, **kwargs):
+        pk = kwargs.get('pk')
+        context = super().get_context_data(**kwargs)
+        context['type'] = get_object_or_404(TypeChoice, pk=pk)
+        return context
+
+
+class StatusUpdateView(View):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        status = get_object_or_404(StatusChoice, pk=pk)
+        form = StatusForm(data={'status': status.statuses})
+        return render(request, 'status_update.html', context={'form': form, 'status': status})
+
+    def post(self, request, *args, **kwargs):
+        form = StatusForm(data=request.POST)
+        pk = kwargs.get('pk')
+        todo = get_object_or_404(StatusChoice, pk=pk)
+        if form.is_valid():
+            todo.statuses = form.cleaned_data['status']
+            todo.save()
+            return redirect('status_view', pk=todo.pk)
+        else:
+            return render(request, 'update.html', context={'form': form,  'status': todo.pk})
+
+
+
+class TypeUpdateView(View):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        type = get_object_or_404(TypeChoice, pk=pk)
+        form = StatusForm(data={'status': status.statuses})
+        return render(request, 'status_update.html', context={'form': form, 'status': status})
+
+    def post(self, request, *args, **kwargs):
+        form = StatusForm(data=request.POST)
+        pk = kwargs.get('pk')
+        todo = get_object_or_404(StatusChoice, pk=pk)
+        if form.is_valid():
+            todo.statuses = form.cleaned_data['status']
+            todo.save()
+            return redirect('status_view', pk=todo.pk)
+        else:
+            return render(request, 'update.html', context={'form': form,  'status': todo.pk})
 # Create your views here.

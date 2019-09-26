@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Update Status{% endblock %}
+{%  block menu %}
+<li><a href="{% url 'status_view' status.pk %}">Status View</a></li>
+{% endblock %}
+{% block content %}
+    <h1>Update Status</h1>
+    <form method="POST" action="{% url "status_update" status.pk %}">
+        {% csrf_token %}
+        {% include 'partial/form.html' with button_text="Update" %}
+    </form>
+{% endblock %}
