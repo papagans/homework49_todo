@@ -1,24 +1,13 @@
 from webapp.models import StatusChoice
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, TemplateView, ListView
+from django.views.generic import View, ListView
 from webapp.forms import StatusForm
-
 
 
 class StatusesView(ListView):
     context_object_name = 'status'
     model = StatusChoice
     template_name = 'statuses/status.html'
-
-
-class StatusView(TemplateView):
-    template_name = 'statuses/status_view.html'
-
-    def get_context_data(self, **kwargs):
-        pk = kwargs.get('pk')
-        context = super().get_context_data(**kwargs)
-        context['status'] = get_object_or_404(StatusChoice, pk=pk)
-        return context
 
 
 class StatusUpdateView(View):
@@ -35,7 +24,7 @@ class StatusUpdateView(View):
         if form.is_valid():
             todo.statuses = form.cleaned_data['status']
             todo.save()
-            return redirect('status_view', pk=todo.pk)
+            return redirect('status')
         else:
             return render(request, 'statuses/status_update.html', context={'form': form, 'status': todo.pk})
 
@@ -61,7 +50,7 @@ class StatusCreateView(View):
             status = StatusChoice.objects.create(
                 statuses=form.cleaned_data['status']
             )
-            return redirect('status_view', pk=status.pk)
+            return redirect('status')
         else:
             return render(request, 'statuses/status_create.html', context={'form': form})
 

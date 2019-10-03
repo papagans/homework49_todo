@@ -1,7 +1,8 @@
 from webapp.models import Todo
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, TemplateView, ListView
+from django.views.generic import View, ListView
 from webapp.forms import TodoForm
+from .base import DetailView
 
 
 class IndexView(ListView):
@@ -13,14 +14,10 @@ class IndexView(ListView):
     paginate_orphans = 1
 
 
-class TodoView(TemplateView):
+class TodoView(DetailView):
     template_name = 'todos/todo_view.html'
-
-    def get_context_data(self, **kwargs):
-        pk = kwargs.get('pk')
-        context = super().get_context_data(**kwargs)
-        context['todo'] = get_object_or_404(Todo, pk=pk)
-        return context
+    context_key = 'todo'
+    model = Todo
 
 
 class TodoCreateView(View):

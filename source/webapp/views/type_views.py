@@ -1,23 +1,13 @@
 from webapp.models import TypeChoice
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, TemplateView, ListView
+from django.views.generic import View, ListView
 from webapp.forms import TypeForm
 
 
-class TypeView(ListView):
+class TypesView(ListView):
     context_object_name = 'type'
     model = TypeChoice
     template_name = 'types/type.html'
-
-
-class TypesView(TemplateView):
-    template_name = 'types/type_view.html'
-
-    def get_context_data(self, **kwargs):
-        pk = kwargs.get('pk')
-        context = super().get_context_data(**kwargs)
-        context['type'] = get_object_or_404(TypeChoice, pk=pk)
-        return context
 
 
 class TypeUpdateView(View):
@@ -34,7 +24,7 @@ class TypeUpdateView(View):
         if form.is_valid():
             todo.types = form.cleaned_data['type']
             todo.save()
-            return redirect('type_view', pk=todo.pk)
+            return redirect('type')
         else:
             return render(request, 'types/type_update.html', context={'form': form, 'type': todo.pk})
 
@@ -61,6 +51,6 @@ class TypeCreateView(View):
             type = TypeChoice.objects.create(
                 types=form.cleaned_data['type']
             )
-            return redirect('type_view', pk=type.pk)
+            return redirect('type')
         else:
             return render(request, 'types/type_create.html', context={'form': form})

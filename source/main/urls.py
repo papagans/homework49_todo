@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from webapp.views import TodoCreateView, TodoUpdateView, TodoDeleteView, \
-    StatusesView, TypeView, StatusUpdateView, StatusView, TypesView, TypeUpdateView, StatusDeleteView, \
+    StatusesView, TypesView, StatusUpdateView, TypeUpdateView, StatusDeleteView, \
     StatusCreateView, TypeDeleteView, TypeCreateView, IndexView, TodoView
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,10 +27,10 @@ urlpatterns = [
     path('todo/<int:pk>/update/', TodoUpdateView.as_view(), name='todo_update'),
     path('todo/<int:pk>/delete/',  TodoDeleteView.as_view(), name='todo_delete'),
     path('statuses/', StatusesView.as_view(), name='status'),
-    path('types/', TypeView.as_view(), name='type'),
+    path('types/', TypesView.as_view(), name='type'),
     path('status/<int:pk>/update/', StatusUpdateView.as_view(), name='status_update'),
-    path('status/<int:pk>/', StatusView.as_view(), name='status_view'),
-    path('type/<int:pk>/', TypesView.as_view(), name='type_view'),
+    # path('status/<int:pk>/', StatusView.as_view(), name='status_view'),
+    # path('type/<int:pk>/', TypesView.as_view(), name='type_view'),
     path('type/<int:pk>/update/', TypeUpdateView.as_view(), name='type_update'),
     path('status/<int:pk>/delete/',  StatusDeleteView.as_view(), name='status_delete'),
     path('status/add/', StatusCreateView.as_view(), name='status_add'),
