@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webapp.views import IndexRedirectView, MyTemplateView, TodoView, TodoCreateView, TodoUpdateView, TodoDeleteView, \
+from webapp.views import MyTemplateView, TodoView, TodoCreateView, TodoUpdateView, TodoDeleteView, \
     StatusesView, TypeView, StatusUpdateView, StatusView, TypesView, TypeUpdateView, StatusDeleteView, \
     StatusCreateView, TypeDeleteView, TypeCreateView
 urlpatterns = [

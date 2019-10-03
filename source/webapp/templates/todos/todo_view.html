@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'todos/base.html' %}
 {% block title %}{{ todo.summary}}{% endblock %}
 {% block menu %}
     <li><a href="{% url 'todo_update' todo.pk %}">Edit</a></li>

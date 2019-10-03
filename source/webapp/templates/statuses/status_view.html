@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'todos/base.html' %}
 {% block title %}{{ status.statuses}}{% endblock %}
 {% block menu %}
     <li><a href="{% url 'status_update' status.pk %}">Edit</a></li>

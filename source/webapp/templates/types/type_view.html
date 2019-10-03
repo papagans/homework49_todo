@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'todos/base.html' %}
 {% block title %}{{ type.types}}{% endblock %}
 {% block menu %}
     <li><a href="{% url 'type_update' type.pk %}">Edit</a></li>
