@@ -6,14 +6,22 @@ from webapp.forms import TodoForm
 # class IndexRedirectView(RedirectView):
 #    pattern_name = 'todo_index'
 
-
-class MyTemplateView(TemplateView):
+class IndexView(ListView):
+    context_object_name = 'todos'
+    model = Todo
     template_name = 'todos/index.html'
+    # ordering = ['-created_at']
+    paginate_by = 5
+    paginate_orphans = 1
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['todos'] = Todo.objects.all()
-        return context
+
+# class MyTemplateView(TemplateView):
+#     template_name = 'todos/index.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['todos'] = Todo.objects.all()
+#         return context
 
 
 class TodoView(TemplateView):
