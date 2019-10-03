@@ -9,19 +9,6 @@ class StatusesView(ListView):
     context_object_name = 'status'
     model = StatusChoice
     template_name = 'statuses/status.html'
-    # ordering = ['-created_at']
-    paginate_by = 5
-    paginate_orphans = 1
-
-
-
-# class StatusesView(TemplateView):
-#     template_name = 'statuses/status.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['status'] = StatusChoice.objects.all()
-#         return context
 
 
 class StatusView(TemplateView):

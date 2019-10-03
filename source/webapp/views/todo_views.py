@@ -3,25 +3,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, TemplateView, ListView
 from webapp.forms import TodoForm
 
-# class IndexRedirectView(RedirectView):
-#    pattern_name = 'todo_index'
 
 class IndexView(ListView):
     context_object_name = 'todos'
     model = Todo
     template_name = 'todos/index.html'
-    # ordering = ['-created_at']
+    ordering = ['-date']
     paginate_by = 5
     paginate_orphans = 1
-
-
-# class MyTemplateView(TemplateView):
-#     template_name = 'todos/index.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['todos'] = Todo.objects.all()
-#         return context
 
 
 class TodoView(TemplateView):
