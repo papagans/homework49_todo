@@ -1,7 +1,8 @@
 from webapp.models import StatusChoice
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, CreateView
 from webapp.forms import StatusForm
+from django.urls import reverse
 
 
 class StatusesView(ListView):
@@ -39,19 +40,14 @@ class StatusDeleteView(View):
         status.delete()
         return redirect('status')
 
-class StatusCreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = StatusForm()
-        return render(request, 'statuses/status_create.html', context={'form': form})
 
-    def post(self, request, *args, **kwargs):
-        form = StatusForm(data=request.POST)
-        if form.is_valid():
-            status = StatusChoice.objects.create(
-                statuses=form.cleaned_data['status']
-            )
-            return redirect('status')
-        else:
-            return render(request, 'statuses/status_create.html', context={'form': form})
+class StatusCreateView(CreateView):
+    model = StatusChoice
+    template_name = 'statuses/status_create.html'
+    form_class = StatusForm
+
+    def get_success_url(self):
+        return reverse('status')
+
 
 

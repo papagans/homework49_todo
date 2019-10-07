@@ -1,7 +1,9 @@
 from webapp.models import TypeChoice
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, CreateView
 from webapp.forms import TypeForm
+from django.urls import reverse
+from .base import UpdateView
 
 
 class TypesView(ListView):
@@ -10,23 +12,35 @@ class TypesView(ListView):
     template_name = 'types/type.html'
 
 
-class TypeUpdateView(View):
-    def get(self, request, *args, **kwargs):
-        pk = kwargs.get('pk')
-        type = get_object_or_404(TypeChoice, pk=pk)
-        form = TypeForm(data={'type': type.types})
-        return render(request, 'types/type_update.html', context={'form': form, 'type': type})
+class TypeUpdateView(UpdateView):
+    form_class = TypeForm
+    template_name = 'types/type_update.html'
+    # redirect_url = 'todos/todo_view.html'
+    model = TypeChoice
+    pk_url_kwarg = 'pk'
+    context_object_name = 'type'
 
-    def post(self, request, *args, **kwargs):
-        form = TypeForm(data=request.POST)
-        pk = kwargs.get('pk')
-        todo = get_object_or_404(TypeChoice, pk=pk)
-        if form.is_valid():
-            todo.types = form.cleaned_data['type']
-            todo.save()
-            return redirect('type')
-        else:
-            return render(request, 'types/type_update.html', context={'form': form, 'type': todo.pk})
+    def get_redirect_url(self):
+        return reverse('type')
+
+
+# class TypeUpdateView(View):
+#     def get(self, request, *args, **kwargs):
+#         pk = kwargs.get('pk')
+#         type = get_object_or_404(TypeChoice, pk=pk)
+#         form = TypeForm(data={'type': type.types})
+#         return render(request, 'types/type_update.html', context={'form': form, 'type': type})
+#
+#     def post(self, request, *args, **kwargs):
+#         form = TypeForm(data=request.POST)
+#         pk = kwargs.get('pk')
+#         todo = get_object_or_404(TypeChoice, pk=pk)
+#         if form.is_valid():
+#             todo.types = form.cleaned_data['type']
+#             todo.save()
+#             return redirect('type')
+#         else:
+#             return render(request, 'types/type_update.html', context={'form': form, 'type': todo.pk})
 
 
 class TypeDeleteView(View):
@@ -40,17 +54,10 @@ class TypeDeleteView(View):
         return redirect('type')
 
 
-class TypeCreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = TypeForm()
-        return render(request, 'types/type_create.html', context={'form': form})
+class TypeCreateView(CreateView):
+    model = TypeChoice
+    template_name = 'types/type_create.html'
+    form_class = TypeForm
 
-    def post(self, request, *args, **kwargs):
-        form = TypeForm(data=request.POST)
-        if form.is_valid():
-            type = TypeChoice.objects.create(
-                types=form.cleaned_data['type']
-            )
-            return redirect('type')
-        else:
-            return render(request, 'types/type_create.html', context={'form': form})
+    def get_success_url(self):
+        return reverse('type')
