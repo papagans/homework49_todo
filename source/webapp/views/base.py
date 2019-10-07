@@ -13,36 +13,6 @@ class DetailView(TemplateView):
         return context
 
 
-#
-# class TypeUpdateView(TemplateView):
-#     def get(self, request, *args, **kwargs):
-#         type_pk = kwargs.get('pk')
-#         type = get_object_or_404(Type, pk=type_pk)
-#         form = TypeForm(data={
-#             'type': type.type,
-#         })
-#         return render(request, 'type_update.html', context={
-#             'form': form,
-#             'type': type
-#
-#         })
-#
-#     def post(self, request, *args, **kwargs):
-#         form = TypeForm(data=request.POST)
-#         type_pk = kwargs.get('pk')
-#         type = get_object_or_404(Type, pk=type_pk)
-#         if form.is_valid():
-#             type.type = form.cleaned_data['type']
-#             type.save()
-#
-#             return redirect('type_index')
-#         else:
-#             return render(request, 'type_update.html', context={
-#                 'form': form,
-#                 'type': type,
-#             })
-
-
 class UpdateView(View):
     form_class = None
     template_name = None
@@ -74,3 +44,39 @@ class UpdateView(View):
 
     def form_invalid(self, form):
         return render(self.request, self.template_name, context={'form': form})
+
+
+class DeleteView(View):
+    template_name = None
+    redirect_url = ''
+    model = None
+    pk_url_kwarg = 'pk'
+    context_object_name = None
+    confirm_delete = False
+
+    def get(self, request, *args, **kwargs):
+        if self.confirm_delete:
+            self.object = self.model.objects.get(id=kwargs['pk'])
+            context = {self.context_object_name: self.object}
+            return render(request, self.template_name, context)
+        else:
+            self.object = self.model.objects.get(id=kwargs['pk'])
+            self.object.delete()
+            return redirect(self.get_redirect_url())
+    def post(self, request, *args, **kwargs):
+        self.object = self.model.objects.get(id=kwargs['pk'])
+        self.object.delete()
+        return redirect(self.get_redirect_url())
+
+    def get_redirect_url(self):
+        return self.redirect_url
+
+# class TodoDeleteView(View):
+#     def get(self, request, pk):
+#         todo = get_object_or_404(Todo, pk=pk)
+#         return render(request, 'types/delete.html', context={'todo': todo})
+#
+#     def post(self, request, pk):
+#         todo = get_object_or_404(Todo, pk=pk)
+#         todo.delete()
+#         return redirect('todo_index')
