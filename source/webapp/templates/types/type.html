@@ -1,7 +1,16 @@
 {% extends "todos/base.html" %}
 {% block menu %}
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
+      </li>
     <li class="nav-item active">
         <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>
+      </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>
+      </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
       </li>
 {% endblock %}
 {% block content %}

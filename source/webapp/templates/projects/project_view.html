@@ -1,5 +1,5 @@
-
 {% extends 'todos/base.html' %}
+{% block title %}{{ project.name}}{% endblock %}
 {% block menu %}
         <li class="nav-item active">
         <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
@@ -13,27 +13,34 @@
     <li class="nav-item active">
         <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
       </li>
-{#            <li class="nav-item active">#}
-{#        <a class="nav-link" href="{% url 'project_index' %}">Projects <span class="sr-only">(current)</span></a>#}
-{#      </li>#}
 {% endblock %}
+
 {% block content %}
-   <h1>Todos:</h1>
-   <hr/>
+   <div class="container">
+       <h1>{{ project.name }}</h1>
+       <li><a href="{% url 'project_update' project.pk %}">Edit Project</a></li>
+    <li><a href="{% url 'project_delete' project.pk %}">Delete Project</a></li>
+       <p>Date: <b>{{ project.created_at }}<br/></b>
+       <p>Description: <b>{{ project.description }}<br/></b>
+       Status: <b>{{ project.status }}</b><br/>
+       <h3>Todos:</h3>
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-   {% for todo in todos %}
+    <div class="comment-list">
+          {% for todo in todos %}
            <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
   <div class="card-header"><h3>{{ todo.summary}}</h3>
-{#    <h5 class="card-title">{{ todo.description }}</h5>#}
-{#      <h5 class="card-title">Status: {{ todo.status }}</h5>#}
-{#      <h5 class="card-title">Type: {{ todo.type }}</h5>#}
     <p class="card-title"><a href="{% url 'todo_view' todo.pk %}"> Details...</a></p>
+                      <p class="comment-links">
+                    <a href="{% url 'todo_update' todo.pk %}">Edit</a>
+                    <a href="{% url 'todo_delete' todo.pk %}">Delete</a>
+                </p>
   </div>
 </div>
-   {% endfor %}
-    {% if is_paginated %}
-        {% include 'partial/pagination.html' %}
-    {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+   </div>
 {% endblock %}

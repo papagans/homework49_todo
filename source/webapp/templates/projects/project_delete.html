@@ -1,5 +1,5 @@
 {% extends "todos/base.html" %}
-{% block title %}Create Todo{% endblock %}
+{% block title %}{{ project.name}}{% endblock %}
 {% block menu %}
         <li class="nav-item active">
         <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
@@ -15,9 +15,9 @@
       </li>
 {% endblock %}
 {% block content %}
-   <h1>add+</h1>
-   <form method="POST" action="{% url "todo_add" %}">
+   <h1>Are you sure want to delete Project "{{ project.name }}"?</h1>
+   <form method="POST" action="{% url "project_delete" project.pk %}">
        {% csrf_token %}
-       {% include 'partial/form.html' with button_text='Create' %}
+       {% include 'partial/form.html' with button_text='Delete' %}
    </form>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from webapp.models import StatusChoice, TypeChoice, Todo
+from webapp.models import StatusChoice, TypeChoice, Todo, Project
 
 
 # class TodoForm(forms.Form):
@@ -20,7 +20,7 @@ from webapp.models import StatusChoice, TypeChoice, Todo
 class TodoForm(forms.ModelForm):
     class Meta:
         model = Todo
-        fields = ['summary', 'description', 'status', 'type']
+        fields = ['summary', 'description', 'status', 'type', 'project']
 
 
 class StatusForm(forms.ModelForm):
@@ -33,3 +33,15 @@ class TypeForm(forms.ModelForm):
     class Meta:
         model = TypeChoice
         fields = ['types']
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description']
+
+
+class ProjectTodoForm(forms.ModelForm):
+    class Meta:
+        model = Todo
+        fields = ['summary', 'description']

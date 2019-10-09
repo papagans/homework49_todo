@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from webapp.models import Todo, TypeChoice, StatusChoice
+from webapp.models import Todo, TypeChoice, StatusChoice, Project, Counter
 
 
 class TodoAdmin(admin.ModelAdmin):
@@ -27,8 +27,25 @@ class StatusesAdmin(admin.ModelAdmin):
     readonly_fields = ['']
 
 
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ['project']
+    # list_filter = ['summary']
+    search_fields = ['project']
+    fields = ['project']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+class CountAdmin(admin.ModelAdmin):
+    list_display = ['counter']
+    # list_filter = ['summary']
+    # search_fields = ['project']
+    fields = ['counter']
+    readonly_fields = ['']
+
+
+admin.site.register(Counter)
+admin.site.register(Project)
 admin.site.register(Todo)
 admin.site.register(StatusChoice)
 admin.site.register(TypeChoice)
-# admin.site.register(Status)
 # Register your models here.
