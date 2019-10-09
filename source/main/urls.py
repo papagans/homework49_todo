@@ -20,7 +20,6 @@ from webapp.views import TodoCreateView, TodoUpdateView, TodoDeleteView, \
     StatusCreateView, TypeDeleteView, TypeCreateView, IndexView, TodoView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', IndexRedirectView.as_view(), name='todo_index'),
     path('', IndexView.as_view(), name='todo_index'),
     path('todo/<int:pk>/', TodoView.as_view(), name='todo_view'),
     path('todo/add/', TodoCreateView.as_view(), name='todo_add'),
