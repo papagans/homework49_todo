@@ -1,9 +1,8 @@
 from webapp.models import StatusChoice
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, ListView, CreateView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from webapp.forms import StatusForm
-from django.urls import reverse
-from .base import UpdateView, DeleteView
+from django.urls import reverse, reverse_lazy
 
 
 class StatusesView(ListView):
@@ -11,28 +10,24 @@ class StatusesView(ListView):
     model = StatusChoice
     template_name = 'statuses/status.html'
 
-class StatusUpdateView(UpdateView):
-    form_class = StatusForm
-    template_name = 'statuses/status_update.html'
-    # redirect_url = 'todos/todo_view.html'
-    model = StatusChoice
-    pk_url_kwarg = 'pk'
-    context_object_name = 'status'
 
-    def get_redirect_url(self):
+class StatusUpdateView(UpdateView):
+    model = StatusChoice
+    template_name = 'statuses/status_update.html'
+    context_object_name = 'status'
+    form_class = StatusForm
+
+    def get_success_url(self):
         return reverse('status')
 
 
 class StatusDeleteView(DeleteView):
-    template_name = 'statuses/status_delete.html'
-    # redirect_url = 'todos/todo_view.html'
     model = StatusChoice
-    pk_url_kwarg = 'pk'
+    template_name = 'statuses/status_delete.html'
+    context_key = 'status'
+    redirect_url = reverse_lazy('status')
     context_object_name = 'status'
-    confirm_delete = True
-
-    def get_redirect_url(self):
-        return reverse('status')
+    success_url = reverse_lazy('status')
 
 
 class StatusCreateView(CreateView):
