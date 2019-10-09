@@ -44,4 +44,4 @@ class ProjectForm(forms.ModelForm):
 class ProjectTodoForm(forms.ModelForm):
     class Meta:
         model = Todo
-        fields = ['summary', 'description']
+        fields = ['summary', 'description', 'status', 'type']

@@ -1,8 +1,6 @@
 from webapp.models import Project
-from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
 from webapp.forms import ProjectForm, ProjectTodoForm
-# from .base import DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
 
@@ -17,7 +15,6 @@ class ProjectsView(ListView):
 
 
 class ProjectView(DetailView):
-    # context_object_name = 'todos'
     template_name = 'projects/project_view.html'
     context_key = 'project'
     model = Project

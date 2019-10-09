@@ -35,6 +35,10 @@ class Project(models.Model):
     status = models.CharField(max_length=20, default=project_status[0][0], verbose_name='Status',
                               choices=project_status)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.todo = None
+
     def __str__(self):
         return self.name
 

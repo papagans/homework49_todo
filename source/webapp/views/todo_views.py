@@ -1,7 +1,7 @@
-from webapp.models import Todo
+from webapp.models import Todo, Project
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
-from webapp.forms import TodoForm
+from webapp.forms import TodoForm, ProjectTodoForm
 # from .base import DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 
@@ -49,6 +49,15 @@ class TodoUpdateView(UpdateView):
         return reverse('todo_view', kwargs={'pk': self.object.pk})
 
 
+class TodoForProjectCreateView(CreateView):
+    template_name = 'todos/create.html'
+    form_class = ProjectTodoForm
+
+    def form_valid(self, form):
+        project_pk = self.kwargs.get('pk')
+        project = get_object_or_404(Project, pk=project_pk)
+        project.project.create(**form.cleaned_data)
+        return redirect('project_view', pk=project_pk)
 # class TodoUpdateView(UpdateView):
 #     form_class = TodoForm
 #     template_name = 'todos/update.html'
