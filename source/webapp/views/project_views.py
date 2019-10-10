@@ -62,15 +62,3 @@ class ProjectUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('project_view', kwargs={'pk': self.object.pk})
-
-
-# class TodoUpdateView(UpdateView):
-#     form_class = TodoForm
-#     template_name = 'todos/update.html'
-#     # redirect_url = 'todos/todo_view.html'
-#     model = Todo
-#     pk_url_kwarg = 'pk'
-#     context_object_name = 'todo'
-#
-#     def get_redirect_url(self):
-#         return reverse('todo_view', kwargs={'pk': self.object.pk})
