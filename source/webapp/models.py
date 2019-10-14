@@ -5,7 +5,6 @@ project_status = (
     ('closed', 'Закрыт'),
 )
 
-
 class Counter(models.Model):
     counter = models.BigIntegerField(null=False, blank=False, verbose_name='Счетчик')
 
