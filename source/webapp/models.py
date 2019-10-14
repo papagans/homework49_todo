@@ -48,6 +48,7 @@ class Todo(models.Model):
     status = models.ForeignKey(StatusChoice, related_name='status', on_delete=models.PROTECT, max_length=20)
     type = models.ForeignKey(TypeChoice, related_name='type', on_delete=models.PROTECT, max_length=20)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+    updated_at = models.DateTimeField(auto_now_add=True, verbose_name='Время обновления')
     project = models.ForeignKey(Project, null=True, blank=False, on_delete=models.PROTECT, max_length=50,
                                 related_name='project', verbose_name='Проект')
 
