@@ -1,0 +1,3 @@
+Todo.objects.filter(status__statuses='done', updated_at__month ='7')
+Todo.objects.filter(project__name='name').values('type__types')
+Todo.objects.filter(description='name').values('project__name')
