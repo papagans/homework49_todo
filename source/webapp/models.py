@@ -9,7 +9,7 @@ class Counter(models.Model):
     counter = models.BigIntegerField(null=False, blank=False, verbose_name='Счетчик')
 
     def __str__(self):
-        return self.counter
+        return str(self.counter)
 
 
 class TypeChoice(models.Model):

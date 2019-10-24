@@ -5,7 +5,8 @@ from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.db.models import Q
-
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class ProjectsView(ListView):
     context_object_name = 'project'
@@ -17,7 +18,6 @@ class ProjectsView(ListView):
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
-        print(self.form)
         self.search_query = self.get_search_query()
         return super().get(request, *args, **kwargs)
 
@@ -67,32 +67,42 @@ class ProjectView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     template_name = 'projects/project_create.html'
     form_class = ProjectForm
+    #
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
 
-class ProjectDeleteView(DeleteView):
+class ProjectDeleteView(LoginRequiredMixin, DeleteView):
     model = Project
     template_name = 'projects/project_delete.html'
     context_key = 'project'
-    redirect_url = reverse_lazy('project_index')
+    redirect_url = reverse_lazy('webapp:project_index')
     context_object_name = 'project'
-    success_url = reverse_lazy('project_index')
+    success_url = reverse_lazy('webapp:project_index')
 
     def change(self):
         pass
 
 
-class ProjectUpdateView(UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     template_name = 'projects/project_update.html'
     context_object_name = 'project'
     form_class = ProjectForm
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})

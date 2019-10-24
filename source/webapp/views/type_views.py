@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView,  UpdateView, DeleteView
 from webapp.forms import TypeForm
 from django.urls import reverse, reverse_lazy
 # from .base import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class TypesView(ListView):
@@ -12,21 +13,26 @@ class TypesView(ListView):
     template_name = 'types/type.html'
 
 
-class TypeUpdateView(UpdateView):
+class TypeUpdateView(LoginRequiredMixin, UpdateView):
     model = TypeChoice
     template_name = 'types/type_update.html'
     context_object_name = 'type'
     form_class = TypeForm
 
     def get_success_url(self):
-        return reverse('type')
+        return reverse('webapp:type')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:                  ПРИГОДИТСЯ!!!
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
 
 # class TypeUpdateView(UpdateView):
 #     form_class = TypeForm
 #     template_name = 'types/type_update.html'
 #     # redirect_url = 'todos/todo_view.html'
-#     model = TypeChoice
+#     model = TypeChoice                                    ПРИГОДИТСЯ
 #     pk_url_kwarg = 'pk'
 #     context_object_name = 'type'
 #
@@ -34,20 +40,25 @@ class TypeUpdateView(UpdateView):
 #         return reverse('type')
 
 
-class TypeDeleteView(DeleteView):
+class TypeDeleteView(LoginRequiredMixin, DeleteView):
     model = TypeChoice
     template_name = 'types/type_delete.html'
     context_key = 'type'
-    redirect_url = reverse_lazy('type')
+    redirect_url = reverse_lazy('webapp:type')
     context_object_name = 'type'
-    success_url = reverse_lazy('type')
+    success_url = reverse_lazy('webapp:type')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:             ПРИГОДИТСЯ
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
 
 # class TypeDeleteView(DeleteView):
 #     template_name = 'types/type_delete.html'
 #     # redirect_url = 'todos/todo_view.html'
 #     model = TypeChoice
-#     pk_url_kwarg = 'pk'
+#     pk_url_kwarg = 'pk'                               ПРИГОДИТСЯ
 #     context_object_name = 'type'
 #     confirm_delete = True
 #
@@ -55,10 +66,15 @@ class TypeDeleteView(DeleteView):
 #         return reverse('type')
 
 
-class TypeCreateView(CreateView):
+class TypeCreateView(LoginRequiredMixin, CreateView):
     model = TypeChoice
     template_name = 'types/type_create.html'
     form_class = TypeForm
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:                 ПРИГОДИТСЯ
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse('type')
+        return reverse('webapp:type')

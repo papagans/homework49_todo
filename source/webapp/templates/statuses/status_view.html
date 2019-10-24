@@ -1,8 +1,8 @@
-{% extends 'todos/base.html' %}
+{% extends 'todos/../base.html' %}
 {% block title %}{{ status.statuses}}{% endblock %}
 {% block menu %}
-    <li><a href="{% url 'status_update' status.pk %}">Edit</a></li>
-    <li><a href="{% url 'status_delete' status.pk %}">Delete</a></li>
+    <li><a href="{% url 'webapp:status_update' status.pk %}">Edit</a></li>
+    <li><a href="{% url 'webapp:status_delete' status.pk %}">Delete</a></li>
 {% endblock %}
 {% block content %}
    <div class="container">

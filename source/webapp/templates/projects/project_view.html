@@ -1,25 +1,25 @@
-{% extends 'todos/base.html' %}
+{% extends 'todos/../base.html' %}
 {% block title %}{{ project.name}}{% endblock %}
 {% block menu %}
-        <li class="nav-item active">
-        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
-      </li>
+{#        <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
 {% endblock %}
 
 {% block content %}
    <div class="container">
        <h1>{{ project.name }}</h1>
-       <li><a href="{% url 'project_update' project.pk %}">Edit Project</a></li>
-    <li><a href="{% url 'project_delete' project.pk %}">Delete Project</a></li>
+       <li><a href="{% url 'webapp:project_update' project.pk %}">Edit Project</a></li>
+    <li><a href="{% url 'webapp:project_delete' project.pk %}">Delete Project</a></li>
        <p>Date: <b>{{ project.created_at }}<br/></b>
        <p>Description: <b>{{ project.description }}<br/></b>
        Status: <b>{{ project.status }}</b><br/>
@@ -31,16 +31,16 @@
           {% for todo in todos %}
            <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
   <div class="card-header"><h3>{{ todo.summary}}</h3>
-    <p class="card-title"><a href="{% url 'todo_view' todo.pk %}"> Details...</a></p>
+    <p class="card-title"><a href="{% url 'webapp:todo_view' todo.pk %}"> Details...</a></p>
                       <p class="comment-links">
-                    <a href="{% url 'todo_update' todo.pk %}">Edit</a>
-                    <a href="{% url 'todo_delete' todo.pk %}">Delete</a>
+                    <a href="{% url 'webapp:todo_update' todo.pk %}">Edit</a>
+                    <a href="{% url 'webapp:todo_delete' todo.pk %}">Delete</a>
                 </p>
   </div>
 </div>
         {% endfor %}
 {#   <div class="form-group" style="text-align: left">#}
-               <form action="{% url 'project_todo_create' project.pk %}" method="POST" id="add_todo">
+               <form action="{% url 'webapp:project_todo_create' project.pk %}" method="POST" id="add_todo">
         {% include 'partial/form.html' with button_text='Add' %}
     </form>
     </div>

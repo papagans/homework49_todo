@@ -1,22 +1,22 @@
-{% extends "todos/base.html" %}
+{% extends "todos/../base.html" %}
 {% block menu %}
-        <li class="nav-item active">
-        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
-      </li>
+{#        <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
 {% endblock %}
 {% block title %}Create Status{% endblock %}
 {% block content %}
    <h1>add+</h1>
-   <form method="POST" action="{% url "status_add" %}">
+   <form method="POST" action="{% url "webapp:status_add" %}">
        {% csrf_token %}
        {% include 'partial/form.html' with button_text='Create' %}
    </form>

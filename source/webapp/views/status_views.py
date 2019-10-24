@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from webapp.forms import StatusForm
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class StatusesView(ListView):
@@ -11,32 +12,42 @@ class StatusesView(ListView):
     template_name = 'statuses/status.html'
 
 
-class StatusUpdateView(UpdateView):
+class StatusUpdateView(LoginRequiredMixin, UpdateView):
     model = StatusChoice
     template_name = 'statuses/status_update.html'
     context_object_name = 'status'
     form_class = StatusForm
 
     def get_success_url(self):
-        return reverse('status')
+        return reverse('webapp:status')
 
 
-class StatusDeleteView(DeleteView):
+class StatusDeleteView(LoginRequiredMixin, DeleteView):
     model = StatusChoice
     template_name = 'statuses/status_delete.html'
     context_key = 'status'
-    redirect_url = reverse_lazy('status')
+    redirect_url = reverse_lazy('webapp:status')
     context_object_name = 'status'
-    success_url = reverse_lazy('status')
+    success_url = reverse_lazy('webapp:status')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
 
-class StatusCreateView(CreateView):
+class StatusCreateView(LoginRequiredMixin, CreateView):
     model = StatusChoice
     template_name = 'statuses/status_create.html'
     form_class = StatusForm
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse('status')
+        return reverse('webapp:status')
 
 
 

@@ -1,25 +1,25 @@
-{% extends "todos/base.html" %}
+{% extends "todos/../base.html" %}
 {% block menu %}
-        <li class="nav-item active">
-        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
-      </li>
+{#        <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
+{#    <li class="nav-item active">#}
+{#        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>#}
+{#      </li>#}
 {% endblock %}
 {% block content %}
     <h1>Statuses:</h1>
 {% for stat in status %}
     <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
   <div class="card-header"><h3>{{ stat.statuses}}</h3>
-    <p class="card-title"><a href="{% url 'status_delete' stat.pk %}"> Delete</a></p>
-      <p class="card-title"><a href="{% url 'status_update' stat.pk %}"> Update</a></p>
+    <p class="card-title"><a href="{% url 'webapp:status_delete' stat.pk %}"> Delete</a></p>
+      <p class="card-title"><a href="{% url 'webapp:status_update' stat.pk %}"> Update</a></p>
 
   </div>
 </div>

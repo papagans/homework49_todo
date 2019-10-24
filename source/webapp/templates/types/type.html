@@ -1,25 +1,14 @@
-{% extends "todos/base.html" %}
+{% extends "todos/../base.html" %}
 {% block menu %}
-        <li class="nav-item active">
-        <a class="nav-link" href="{% url 'project_add' %}">Add Project <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'todo_add' %}">Add toDo+ <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'status_add' %}">Add Status <span class="sr-only">(current)</span></a>
-      </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'type_add' %}">Add Type <span class="sr-only">(current)</span></a>
-      </li>
+{##}
 {% endblock %}
 {% block content %}
     <h1>Types:</h1>
 {% for types in type %}
     <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
   <div class="card-header"><h3>{{ types.types}}</h3>
-          <p class="card-title"><a href="{% url 'type_delete' types.pk %}"> Delete</a></p>
-      <p class="card-title"><a href="{% url 'type_update' types.pk %}"> Update</a></p>
+          <p class="card-title"><a href="{% url 'webapp:type_delete' types.pk %}"> Delete</a></p>
+      <p class="card-title"><a href="{% url 'webapp:type_update' types.pk %}"> Update</a></p>
   </div>
 </div>
 

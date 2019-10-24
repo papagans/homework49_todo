@@ -1,4 +1,4 @@
-from webapp.models import Todo, Project
+from webapp.models import Todo, Project, Counter
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
 from webapp.forms import TodoForm, ProjectTodoForm, SimpleSearchForm
@@ -6,6 +6,7 @@ from webapp.forms import TodoForm, ProjectTodoForm, SimpleSearchForm
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class IndexView(ListView):
     context_object_name = 'todos'
@@ -20,12 +21,14 @@ class IndexView(ListView):
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
-        print(self.form)
         self.search_query = self.get_search_query()
+        # count = self.count()
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        count = self.count()
+        context['count'] = count
         if self.search_query:
             context['query'] = urlencode({'search': self.search_query})
         context['form'] = self.form
@@ -48,6 +51,13 @@ class IndexView(ListView):
             return self.form.cleaned_data['search']
         return None
 
+    def count(self):
+        counter = get_object_or_404(Counter, pk=1)
+        print(counter)
+        counter.counter += 1
+        counter.save()
+        return counter
+
 
 class TodoView(DetailView):
     template_name = 'todos/todo_view.html'
@@ -55,43 +65,63 @@ class TodoView(DetailView):
     model = Todo
 
 
-class TodoCreateView(CreateView):
+class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
     template_name = 'todos/create.html'
     form_class = TodoForm
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse('todo_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:todo_view', kwargs={'pk': self.object.pk})
 
 
-class TodoDeleteView(DeleteView):
+class TodoDeleteView(LoginRequiredMixin, DeleteView):
     model = Todo
     template_name = 'todos/delete.html'
     context_key = 'todo'
-    redirect_url = reverse_lazy('todo_index')
+    redirect_url = reverse_lazy('webapp:todo_index')
     context_object_name = 'todo'
-    success_url = reverse_lazy('todo_index')
+    success_url = reverse_lazy('webapp:todo_index')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
 
-class TodoUpdateView(UpdateView):
+class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
     template_name = 'todos/update.html'
     context_object_name = 'todo'
     form_class = TodoForm
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse('todo_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:todo_view', kwargs={'pk': self.object.pk})
 
 
-class TodoForProjectCreateView(CreateView):
+class TodoForProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'todos/create.html'
     form_class = ProjectTodoForm
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return redirect('accounts:login')
+    #     return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         project_pk = self.kwargs.get('pk')
         project = get_object_or_404(Project, pk=project_pk)
         project.project.create(**form.cleaned_data)
-        return redirect('project_view', pk=project_pk)
+        return redirect('webapp:project_view', pk=project_pk)
 # class TodoUpdateView(UpdateView):
 #     form_class = TodoForm
 #     template_name = 'todos/update.html'
