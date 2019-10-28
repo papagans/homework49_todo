@@ -122,3 +122,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL = 'accounts:login'
+
+# Для тестирования с mailtrap впишите сюда свои настройки с mailtrap.
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '737f748eb7b431'  # ваш user
+EMAIL_HOST_PASSWORD = 'b11f4698ac53cd'  # ваш пароль
+EMAIL_PORT = '2525'
+
+HOST_NAME = '127.0.0.1:8000'

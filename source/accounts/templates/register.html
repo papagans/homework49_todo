@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-md-center text-center">
+    <h1>Sign Up</h1>
+    </div>
+    <form action="{% url 'accounts:register' %}" method="post" class="text-center">
+        {% include 'partial/form.html' with button_text='Сохранить' %}
+    </form>
+{% endblock %}
