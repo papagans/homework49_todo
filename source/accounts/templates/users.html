@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block menu %}
+            {% include 'partial/simple_search.html' %}
+{% endblock %}
+{% block content %}
+   <h1>Users:</h1>
+   <hr/>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+   {% for user in users %}
+           <div class="card border-primary mb-3" style="max-width: 18rem; text-align: center">
+  <div class="card-header"><h3>{{ user.username}}</h3>
+    <p class="card-title"><a href="{% url 'accounts:detail' user.pk %}"> Details...</a></p>
+  </div>
+           </div>
+   {% endfor %}
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+{% endblock %}

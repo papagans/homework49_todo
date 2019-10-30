@@ -6,7 +6,7 @@ from django.urls import reverse
 from main.settings import HOST_NAME
 from accounts.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from accounts.models import Token
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, TemplateView, ListView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -117,3 +117,13 @@ class UserPasswordChangeView(UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:login')
+
+
+class UsersView(TemplateView):
+    template_name = 'users.html'
+    print('fuck')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        return context
