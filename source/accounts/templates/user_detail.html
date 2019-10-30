@@ -2,7 +2,14 @@
 {% block title %}Пользователь{% endblock %}
 {% block menu %}
     {% if user_obj == request.user %}
-    <li><a href="{% url "accounts:user_update" user_obj.pk %}">Редактировать</a></li>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url "accounts:user_update" user_obj.pk %}">Редактировать <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+          </div>
+{#    <li><a href="{% url "accounts:user_update" user_obj.pk %}">Редактировать</a></li>#}
 {#    <li><a href="{% url "accounts:password_change" user_obj.pk %}">Смена пароля</a></li>#}
     {% endif %}
 {% endblock %}
