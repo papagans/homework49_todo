@@ -4,10 +4,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
 from main.settings import HOST_NAME
-from accounts.forms import UserCreationForm
+from accounts.forms import UserCreationForm, UserChangeForm
 from accounts.models import Token
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 def login_view(request):
@@ -89,3 +90,16 @@ class UserDetailView(DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
+
+
+class UserEditView(UserPassesTestMixin, UpdateView):
+    model = User
+    template_name = 'user_update.html'
+    form_class = UserChangeForm
+    context_object_name = 'user_obj'
+
+    def test_func(self):
+        return self.get_object() == self.request.user
+
+    def get_success_url(self):
+        return reverse('accounts:detail', kwargs={'pk': self.object.pk})

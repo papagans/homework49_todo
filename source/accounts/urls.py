@@ -1,4 +1,4 @@
-from accounts.views import logout_view, login_view, register_view, user_activate, UserDetailView
+from accounts.views import logout_view, login_view, register_view, user_activate, UserDetailView, UserEditView
 from django.urls import path
 
 app_name = 'accounts'
@@ -10,5 +10,6 @@ urlpatterns = [
     path('register/', register_view, name='register'),
     path('register/activate/', user_activate, name='user_activate'),
     path('<pk>/', UserDetailView.as_view(), name='detail'),
+    path('<int:pk>/update', UserEditView.as_view(), name='user_update'),
 
 ]
