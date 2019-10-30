@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
 from main.settings import HOST_NAME
-from accounts.forms import UserCreationForm, UserChangeForm
+from accounts.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from accounts.models import Token
 from django.views.generic import DetailView, UpdateView
 from django.contrib.auth.models import User
@@ -103,3 +103,13 @@ class UserEditView(UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
+
+
+class UserPasswordChangeView(UpdateView):
+    model = User
+    template_name = 'user_password_change.html'
+    form_class = PasswordChangeForm
+    context_object_name = 'user_obj'
+
+    def get_success_url(self):
+        return reverse('accounts:login')
