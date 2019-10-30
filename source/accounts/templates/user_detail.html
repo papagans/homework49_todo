@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Пользователь{% endblock %}
+{% block menu %}
+    {% if user_obj == request.user %}
+    <li><a href="{% url "accounts:user_update" user_obj.pk %}">Редактировать</a></li>
+    <li><a href="{% url "accounts:password_change" user_obj.pk %}">Смена пароля</a></li>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <h1>Личный кабинет</h1>
+    <p>Имя пользователя: {{ user_obj.username }}</p>
+    <p>Имя: {{ user_obj.first_name }}</p>
+    <p>Фамилия: {{ user_obj.last_name }}</p>
+    <p>Почта: {{ user_obj.email }}</p>
+{% endblock %}

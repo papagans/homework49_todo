@@ -6,6 +6,8 @@ from django.urls import reverse
 from main.settings import HOST_NAME
 from accounts.forms import UserCreationForm
 from accounts.models import Token
+from django.views.generic import DetailView
+from django.contrib.auth.models import User
 
 
 def login_view(request):
@@ -81,3 +83,9 @@ def user_activate(request):
     except Token.DoesNotExist:
         # если токена нет - сразу редирект
         return redirect('webapp:todo_index')
+
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'user_detail.html'
+    context_object_name = 'user_obj'
