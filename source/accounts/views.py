@@ -15,6 +15,10 @@ def login_view(request):
     context = {}
     next = request.GET.get('next')
     redirect_page = request.session.setdefault('redirect_page', next)
+    print(redirect_page)
+    if redirect_page == None:
+        redirect_page = '/'
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
