@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.urls import reverse
 from main.settings import HOST_NAME
-from accounts.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from accounts.models import Token
+from accounts.forms import UserCreationForm, UserForm, PasswordChangeForm, UserGitHubForm
+from accounts.models import Token, UserGitHub
 from django.views.generic import DetailView, UpdateView, TemplateView, ListView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -96,17 +96,18 @@ class UserDetailView(DetailView):
     context_object_name = 'user_obj'
 
 
-class UserEditView(UserPassesTestMixin, UpdateView):
-    model = User
-    template_name = 'user_update.html'
-    form_class = UserChangeForm
-    context_object_name = 'user_obj'
+# class UserEditView(UserPassesTestMixin, UpdateView):
+#     model = User
+#     template_name = 'user_update.html'
+#     form_class = UserChangeForm
+#     context_object_name = 'user_obj'
+#
+#     def test_func(self):
+#         return self.get_object() == self.request.user
+#
+#     def get_success_url(self):
+#         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
-    def test_func(self):
-        return self.get_object() == self.request.user
-
-    def get_success_url(self):
-        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
 
 class UserPasswordChangeView(UpdateView):
@@ -121,9 +122,29 @@ class UserPasswordChangeView(UpdateView):
 
 class UsersView(TemplateView):
     template_name = 'users.html'
-    print('fuck')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['users'] = User.objects.all()
         return context
+
+
+@transaction.atomic
+def update_profile(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserGitHubForm(request.POST, instance=request.user.usergithub)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            # messages.success(request, _('Your profile was successfully updated!'))
+            return redirect('accounts:user_list')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserGitHubForm(instance=request.user.usergithub)
+        print(user_form)
+        print(profile_form)
+    return render(request, 'user_update.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })

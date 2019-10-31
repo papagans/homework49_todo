@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from accounts.models import UserGitHub
 
 
 class UserCreationForm(forms.Form):
@@ -39,11 +40,24 @@ class UserCreationForm(forms.Form):
         return self.cleaned_data
 
 
-class UserChangeForm(forms.ModelForm):
+class UserGitHubForm(forms.ModelForm):
+    class Meta:
+        model = UserGitHub
+        fields = ['github']
+
+
+class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
-        labels = {'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email'}
+        fields = ('first_name', 'last_name', 'email')
+
+
+# class UserChangeForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = User
+#         fields = ['first_name', 'last_name', 'email', 'email', 'github']
+#         labels = {'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email'}
 
 
 class PasswordChangeForm(forms.ModelForm):
