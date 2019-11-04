@@ -4,12 +4,12 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from main.settings import HOST_NAME
-from accounts.forms import UserCreationForm, UserForm, PasswordChangeForm, UserGitHubForm
-from accounts.models import Token, UserGitHub
+from accounts.forms import UserCreationForm, UserForm, PasswordChangeForm, UserChForm
+from accounts.models import Token
 from django.views.generic import DetailView, UpdateView, TemplateView, ListView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
+import re
 
 def login_view(request):
     context = {}
@@ -133,7 +133,15 @@ class UsersView(TemplateView):
 def update_profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=request.user)
-        profile_form = UserGitHubForm(request.POST, instance=request.user.usergithub)
+        profile_form = UserChForm(request.POST, request.FILES, instance=request.user.profile)
+        # git = request.user.profile.github
+        # print(git)
+        # git = re.match(git, "https://github.com/")
+        # print(git, 'it works!!!')
+
+        # if git == match.group(0):
+        # print(match.group(0), 'it works!')
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -141,10 +149,9 @@ def update_profile(request):
             return redirect('accounts:user_list')
     else:
         user_form = UserForm(instance=request.user)
-        profile_form = UserGitHubForm(instance=request.user.usergithub)
-        print(user_form)
-        print(profile_form)
+        profile_form = UserChForm(instance=request.user.profile)
     return render(request, 'user_update.html', {
         'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        # 'user_obj': request.user
     })

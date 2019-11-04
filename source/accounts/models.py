@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from webapp.models import Project
 
 
 class Token(models.Model):
@@ -15,21 +16,27 @@ class Token(models.Model):
         return str(self.token)
 
 
-class UserGitHub(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='usergithub')
-    github = models.URLField(null=True, blank=True, verbose_name='github')
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, verbose_name='Пользователь')
+    about_me = models.TextField(null=True, blank=True, verbose_name='Обо мне')
+    avatar = models.ImageField(null=True, blank=True, upload_to='user_pics', verbose_name='Аватар')
+    github = models.URLField(null=True, blank=True, verbose_name='Github')
 
     def __str__(self):
-        return str(self.github)
+        return self.user.get_full_name() + "'s Profile"
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserGitHub.objects.create(user=instance)
+class Command(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name='Программист', related_name='command')
+    project = models.ForeignKey(Project, verbose_name='Проект', on_delete=models.PROTECT)
+    created_at = models.DateField(verbose_name='Время создания')
+    end_at = models.DateField(verbose_name='Время создания')
 
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.usergithub.save()
-
+    def __str__(self):
+        return str(self.user)

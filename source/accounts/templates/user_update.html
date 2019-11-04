@@ -11,12 +11,20 @@
 {#        {% include 'partial/form.html' with button_text="Update" %}#}
 {#    </form>#}
 <h2>{{ user.username }}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ user_form.as_p }}
-  {{ profile_form.as_p }}
-  <button type="submit" class="btn btn-primary">Update</button>
-</form>
+        <h1>Edit Profile: {{ user_obj.username }}</h1>
+    <form action="{% url 'accounts:user_update' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+{#        {% include 'partial/form.html' with button_text="Update" %}#}
+        {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+{#<form method="post">#}
+{#  {% csrf_token %}#}
+{#  {{ user_form.as_p }}#}
+{#  {{ profile_form.as_p }}#}
+{#  <button type="submit" class="btn btn-primary">Update</button>#}
+{#</form>#}
 
 
 

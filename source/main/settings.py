@@ -132,3 +132,6 @@ EMAIL_HOST_PASSWORD = 'b11f4698ac53cd'  # ваш пароль
 EMAIL_PORT = '2525'
 
 HOST_NAME = '127.0.0.1:8000'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/media/'
