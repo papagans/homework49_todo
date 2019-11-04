@@ -48,4 +48,5 @@ admin.site.register(Project)
 admin.site.register(Todo)
 admin.site.register(StatusChoice)
 admin.site.register(TypeChoice)
+
 # Register your models here.
