@@ -29,14 +29,3 @@ class Profile(models.Model):
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
 
-
-class Command(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             verbose_name='Программист', related_name='command')
-    project = models.ForeignKey(Project, verbose_name='Проект', on_delete=models.PROTECT)
-    created_at = models.DateField(verbose_name='Дата начала работы')
-    end_at = models.DateField(verbose_name='Дата окончания работы')
-
-
-    def __str__(self):
-        return str(self.user)

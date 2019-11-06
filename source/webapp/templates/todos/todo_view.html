@@ -17,8 +17,11 @@
 {% block content %}
    <div class="container">
        <h1>{{ todo.summary }}</h1>
-       <p>Date: <b>{{ todo.date }} {{ todo.updated_at }}<br/></b> Status: <b>{{ todo.status }}</b><br/> Type:<b>{{ todo.type }}</b></p>
+       <p>Date: <b>{{ todo.date }} {{ todo.updated_at }}<br/></b>
+           Created By: <b>{{ todo.created_by }} <br/></b>
+           Status: <b>{{ todo.status }}</b><br/> Type:<b>{{ todo.type }}</b></p>
        <div class="pre">Description: {{ todo.description }}</div>
+
        <li><a href="{% url 'webapp:todo_update' todo.pk %}">Edit</a></li>
     <li><a href="{% url 'webapp:todo_delete' todo.pk %}">Delete</a></li>
    </div>

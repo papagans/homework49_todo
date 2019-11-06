@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from webapp.models import Todo, TypeChoice, StatusChoice, Project, Counter
+from webapp.models import Todo, TypeChoice, StatusChoice, Project, Counter, Team
 
 
 class TodoAdmin(admin.ModelAdmin):
@@ -48,5 +48,6 @@ admin.site.register(Project)
 admin.site.register(Todo)
 admin.site.register(StatusChoice)
 admin.site.register(TypeChoice)
+admin.site.register(Team)
 
 # Register your models here.

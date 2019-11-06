@@ -51,6 +51,7 @@ class ProjectView(DetailView):
     model = Project
 
     def get_context_data(self, **kwargs):
+        # user = ProjectTodoForm('username')
         context = super().get_context_data(**kwargs)
         context['form'] = ProjectTodoForm()
         project = context['project'].project.order_by('-date')

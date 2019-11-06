@@ -1,4 +1,6 @@
-from webapp.models import Todo, Project, Counter
+from django.contrib.auth.models import User
+
+from webapp.models import Todo, Project, Counter, Team
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
 from webapp.forms import TodoForm, ProjectTodoForm, SimpleSearchForm
@@ -6,7 +8,8 @@ from webapp.forms import TodoForm, ProjectTodoForm, SimpleSearchForm
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.db.models import Q
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 
 class IndexView(ListView):
     context_object_name = 'todos'
@@ -63,13 +66,38 @@ class TodoView(DetailView):
     template_name = 'todos/todo_view.html'
     context_key = 'todo'
     model = Todo
+    form_class = TodoForm
+
+    def get_form(self, form_class=TodoForm):
+        form = super().get_form()
+        user = self.request.user
+        form.fields['created_by'].queryset = User.objects.all().filter(user=user)
+        return form
 
 
-class TodoCreateView(LoginRequiredMixin, CreateView):
+class TodoCreateView(UserPassesTestMixin, CreateView):
     model = Todo
     template_name = 'todos/create.html'
     form_class = TodoForm
 
+    def test_func(self):
+
+        return self.request.user.pk == self.kwargs['pk']
+
+    def get_form(self, form_class=None):
+        form = super().get_form()
+        # project_test = Project.objects.get(pk=1)
+        # print(project_test.teams.all())
+        user = self.request.user
+        projects = []
+        teams = Team.objects.all().filter(user=user)
+        for team in teams:
+            projects.append(team.project.name)
+        print(teams, 'USER in TEAM')
+        form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
+        form.fields['created_by'].queryset = User.objects.all().filter(user=user)
+        # print(userpk)
+        return form
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.is_authenticated:
     #         return redirect('accounts:login')
@@ -79,7 +107,7 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
         return reverse('webapp:todo_view', kwargs={'pk': self.object.pk})
 
 
-class TodoDeleteView(LoginRequiredMixin, DeleteView):
+class TodoDeleteView(UserPassesTestMixin, DeleteView):
     model = Todo
     template_name = 'todos/delete.html'
     context_key = 'todo'
@@ -87,18 +115,43 @@ class TodoDeleteView(LoginRequiredMixin, DeleteView):
     context_object_name = 'todo'
     success_url = reverse_lazy('webapp:todo_index')
 
+    def test_func(self):
+        users = []
+        task_pk = self.kwargs.get('pk')
+        task = Todo.objects.get(pk=task_pk)
+        project = Project.objects.get(project__pk=task.pk)
+        teams = Team.objects.all().filter(project=project)
+        print(Project.objects.get(pk=1))
+        print(Project.objects.get(pk=1).project.all())
+        # print(teams)
+        for team in teams:
+            users.append(team.user.pk)
+            # print(team.user.pk)
+        return self.request.user.pk in users
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.is_authenticated:
     #         return redirect('accounts:login')
     #     return super().dispatch(request, *args, **kwargs)
 
 
-class TodoUpdateView(LoginRequiredMixin, UpdateView):
+class TodoUpdateView(UserPassesTestMixin, UpdateView):
     model = Todo
     template_name = 'todos/update.html'
     context_object_name = 'todo'
     form_class = TodoForm
 
+    def test_func(self):
+        users = []
+        task_pk = self.kwargs.get('pk')
+        task = Todo.objects.get(pk=task_pk)
+        project = Project.objects.get(project__pk=task.pk)
+        print(project)
+        teams = Team.objects.all().filter(project=project)
+        print(teams)
+        for team in teams:
+            users.append(team.user.pk)
+            print(team.user.pk)
+        return self.request.user.pk in users
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.is_authenticated:
     #         return redirect('accounts:login')
@@ -108,7 +161,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('webapp:todo_view', kwargs={'pk': self.object.pk})
 
 
-class TodoForProjectCreateView(LoginRequiredMixin, CreateView):
+class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
     template_name = 'todos/create.html'
     form_class = ProjectTodoForm
 
@@ -122,6 +175,44 @@ class TodoForProjectCreateView(LoginRequiredMixin, CreateView):
         project = get_object_or_404(Project, pk=project_pk)
         project.project.create(**form.cleaned_data)
         return redirect('webapp:project_view', pk=project_pk)
+
+    def get_form(self, form_class=None):
+        form = super().get_form()
+        user = self.request.user
+        form.fields['created_by'].initial = user
+        print(form.fields['created_by'].initial)
+        return form
+
+    def test_func(self):
+        user = self.request.user.pk
+        # print(user)
+        users = []
+        project = self.kwargs.get('pk')
+        # print(project)
+        teams = Team.objects.all().filter(project=project)
+        for team in teams:
+            users.append(team.user.pk)
+            print(team.user.pk)
+        print(users)
+        print(teams, 'USER in TEAM')
+        # print(projects)
+        # form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
+
+        return self.request.user.pk in users
+
+    # def get_form(self, form_class=None):
+    #     form = super().get_form()
+    #     # project_test = Project.objects.get(pk=1)
+    #     # print(project_test.teams.all())
+    #     user = self.request.user
+    #     projects = []
+    #     teams = Team.objects.all().filter(user=user)
+    #     for team in teams:
+    #         projects.append(team.project.name)
+    #     print(teams, 'USER in TEAM')
+    #     form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
+    #     # print(userpk)
+    #     return form
 # class TodoUpdateView(UpdateView):
 #     form_class = TodoForm
 #     template_name = 'todos/update.html'

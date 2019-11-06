@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from webapp.models import StatusChoice, TypeChoice, Todo, Project
+from webapp.models import StatusChoice, TypeChoice, Todo, Project, User
 
 
 # class TodoForm(forms.Form):
@@ -42,9 +42,13 @@ class ProjectForm(forms.ModelForm):
 
 
 class ProjectTodoForm(forms.ModelForm):
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.fields['created_by'].queryset = User.objects.get(
+    #     )
     class Meta:
         model = Todo
-        fields = ['summary', 'description', 'status', 'type']
+        fields = ['summary', 'description', 'status', 'type', 'created_by']
 
 
 class SimpleSearchForm(forms.Form):
