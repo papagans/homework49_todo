@@ -16,7 +16,7 @@
 {% endblock %}
 {% block content %}
    <h1>add+</h1>
-   <form method="POST" action="{% url "webapp:todo_add" %}">
+   <form method="POST" action="">
        {% csrf_token %}
        {% include 'partial/form.html' with button_text='Create' %}
    </form>

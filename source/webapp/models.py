@@ -42,6 +42,7 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+
 class Todo(models.Model):
     summary = models.CharField(max_length=200, null=False, blank=False, verbose_name='Заголовок')
     description = models.TextField(max_length=400, null=True, blank=True, verbose_name='Описание')
@@ -53,7 +54,7 @@ class Todo(models.Model):
                                 related_name='project', verbose_name='Проект')
     created_by = models.ForeignKey(User, null=True, blank=True, default=None, verbose_name='Автор',
                                on_delete=models.CASCADE, related_name='user_created')
-    assigned_to = models.ForeignKey(User, null=True, blank=True, default=None, verbose_name='Bcgjkybntkm',
+    assigned_to = models.ForeignKey(User, null=True, blank=True, default=None, verbose_name='Исполнитель',
                                on_delete=models.CASCADE, related_name='user_assigned')
 
     def __str__(self):

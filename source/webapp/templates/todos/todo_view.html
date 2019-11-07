@@ -20,6 +20,7 @@
        <p>Date: <b>{{ todo.date }} {{ todo.updated_at }}<br/></b>
            Created By: <b>{{ todo.created_by }} <br/></b>
            Status: <b>{{ todo.status }}</b><br/> Type:<b>{{ todo.type }}</b></p>
+       Assigned To: <b>{{ todo.assigned_to }}<br/></b>
        <div class="pre">Description: {{ todo.description }}</div>
 
        <li><a href="{% url 'webapp:todo_update' todo.pk %}">Edit</a></li>

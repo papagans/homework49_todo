@@ -66,38 +66,86 @@ class TodoView(DetailView):
     template_name = 'todos/todo_view.html'
     context_key = 'todo'
     model = Todo
-    form_class = TodoForm
+    # form_class = TodoForm
+    #
+    # def get_form(self, form_class=TodoForm):
+    #     form = super().get_form()
+    #     user = self.request.user
+    #     form.fields['created_by'].queryset = User.objects.all().filter(user=user)
+    #     return form
 
-    def get_form(self, form_class=TodoForm):
-        form = super().get_form()
-        user = self.request.user
-        form.fields['created_by'].queryset = User.objects.all().filter(user=user)
-        return form
 
-
-class TodoCreateView(UserPassesTestMixin, CreateView):
+class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
     template_name = 'todos/create.html'
     form_class = TodoForm
 
-    def test_func(self):
-
-        return self.request.user.pk == self.kwargs['pk']
-
-    def get_form(self, form_class=None):
-        form = super().get_form()
-        # project_test = Project.objects.get(pk=1)
-        # print(project_test.teams.all())
-        user = self.request.user
-        projects = []
-        teams = Team.objects.all().filter(user=user)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        pk = self.kwargs.get('pk')
+        users = []
+        project = Project.objects.get(pk=pk)
+        # project = Project.objects.get(project__pk=task.pk)
+        teams = Team.objects.filter(project=project)
         for team in teams:
-            projects.append(team.project.name)
-        print(teams, 'USER in TEAM')
-        form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
-        form.fields['created_by'].queryset = User.objects.all().filter(user=user)
-        # print(userpk)
-        return form
+            users.append(team.user.pk)
+
+        kwargs['assigned_to'] = users
+        return kwargs
+
+    # def get_form(self, form_class=None):
+    #     form = super().get_form()
+    #     pk = self.kwargs.get('pk')
+    #     form.fields['created_by'].initial = pk
+    #     # print(task_pk)
+    #     # form.fields['created_by'].initial = user
+    #     form.fields['project'].initial = Project.objects.get(pk=pk)
+    #     return form
+
+
+    def get_project(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Project, pk=pk)
+
+    def form_valid(self, form):
+        project = self.get_project()
+        pk = self.kwargs.get('pk')
+        issue = project.project.create(**form.cleaned_data)
+        issue.created_by = self.request.user
+        issue.project.pk = pk
+        issue.save()
+        return redirect('webapp:project_index')
+
+
+    # def test_func(self):
+    #     users = []
+    #     task_pk = self.kwargs.get('pk')
+    #     task = Todo.objects.get(pk=task_pk)
+    #     project = Project.objects.get(project__pk=task.pk)
+    #     teams = Team.objects.all().filter(project=project)
+    #     print(Project.objects.get(pk=1))
+    #     print(Project.objects.get(pk=1).project.all())
+    #     # print(teams)
+    #     for team in teams:
+    #         users.append(team.user.pk)
+    #         # print(team.user.pk)
+    #     return self.request.user.pk in users
+
+    # def get_form(self, form_class=None):
+    #     form = super().get_form()
+    #     # project_test = Project.objects.get(pk=1)
+    #     # print(project_test.teams.all())
+    #     user = self.request.user
+    #     projects = []
+    #     teams = Team.objects.all().filter(user=user)
+    #     for team in teams:
+    #         projects.append(team.project.name)
+    #     print(teams, 'USER in TEAM')
+    #     form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
+    #     form.fields['created_by'].queryset = User.objects.all().filter(user=user)
+    #     form.fields['created_by'].initial = user
+    #     # print(userpk)
+    #     return form
     # def dispatch(self, request, *args, **kwargs):
     #     if not request.user.is_authenticated:
     #         return redirect('accounts:login')
@@ -121,8 +169,6 @@ class TodoDeleteView(UserPassesTestMixin, DeleteView):
         task = Todo.objects.get(pk=task_pk)
         project = Project.objects.get(project__pk=task.pk)
         teams = Team.objects.all().filter(project=project)
-        print(Project.objects.get(pk=1))
-        print(Project.objects.get(pk=1).project.all())
         # print(teams)
         for team in teams:
             users.append(team.user.pk)
@@ -139,6 +185,22 @@ class TodoUpdateView(UserPassesTestMixin, UpdateView):
     template_name = 'todos/update.html'
     context_object_name = 'todo'
     form_class = TodoForm
+
+    def form_valid(self, form):
+        # project = self.kwargs.get('pk')
+        # print(project)
+        form.instance.created_by = self.request.user
+        # form.fields['project'].initial = project
+
+        # print(project)
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        # project = self.kwargs.get('pk')
+        kwargs = super().get_form_kwargs()
+        kwargs['created_by'] = self.request.user
+        # kwargs['project'] = self.kwargs.get('pk')
+        return kwargs
 
     def test_func(self):
         users = []
@@ -162,6 +224,7 @@ class TodoUpdateView(UserPassesTestMixin, UpdateView):
 
 
 class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
+    model = Todo
     template_name = 'todos/create.html'
     form_class = ProjectTodoForm
 
@@ -171,17 +234,20 @@ class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
     #     return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        project_pk = self.kwargs.get('pk')
-        project = get_object_or_404(Project, pk=project_pk)
-        project.project.create(**form.cleaned_data)
-        return redirect('webapp:project_view', pk=project_pk)
+        # project = self.kwargs.get('pk')
+        # print(project)
+        form.instance.created_by = self.request.user
+        # form.fields['project'].initial = project
 
-    def get_form(self, form_class=None):
-        form = super().get_form()
-        user = self.request.user
-        form.fields['created_by'].initial = user
-        print(form.fields['created_by'].initial)
-        return form
+        # print(project)
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        # project = self.kwargs.get('pk')
+        kwargs = super().get_form_kwargs()
+        kwargs['created_by'] = self.request.user
+        # kwargs['project'] = self.kwargs.get('pk')
+        return kwargs
 
     def test_func(self):
         user = self.request.user.pk
@@ -199,6 +265,19 @@ class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
         # form.fields['project'].queryset = Project.objects.all().filter(name__in=projects)
 
         return self.request.user.pk in users
+
+    def get_success_url(self):
+        return reverse('webapp:todo_view', kwargs={'pk': self.object.pk})
+    # def get_form(self, form_class=None):
+    #     form = super().get_form()
+    #     user = self.request.user
+    #     task_pk = self.kwargs.get('pk')
+    #     print(task_pk)
+    #     form.fields['created_by'].initial = user
+    #     form.fields['project'].querryset = Project.objects.filter(project__pk=task_pk)
+    #     print(form.fields['project'].initial)
+    #     print(form.fields['created_by'].initial)
+    #     return form
 
     # def get_form(self, form_class=None):
     #     form = super().get_form()
@@ -220,6 +299,6 @@ class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
 #     model = Todo
 #     pk_url_kwarg = 'pk'
 #     context_object_name = 'todo'
-#
+# #
 #     def get_redirect_url(self):
 #         return reverse('todo_view', kwargs={'pk': self.object.pk})

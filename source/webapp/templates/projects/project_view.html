@@ -20,6 +20,7 @@
        <h1>{{ project.name }}</h1>
        <li><a href="{% url 'webapp:project_update' project.pk %}">Edit Project</a></li>
     <li><a href="{% url 'webapp:project_delete' project.pk %}">Delete Project</a></li>
+   <li><a href="{% url 'webapp:todo_add' project.pk %}"> Add Todo</a></li>
        <p>Date: <b>{{ project.created_at }}<br/></b>
        <p>Description: <b>{{ project.description }}<br/></b>
        Status: <b>{{ project.status }}</b><br/>

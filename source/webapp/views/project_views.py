@@ -53,7 +53,7 @@ class ProjectView(DetailView):
     def get_context_data(self, **kwargs):
         # user = ProjectTodoForm('username')
         context = super().get_context_data(**kwargs)
-        context['form'] = ProjectTodoForm()
+        context['form'] = ProjectTodoForm('created_by')
         project = context['project'].project.order_by('-date')
         self.paginate_comments_to_context(project, context)
         return context

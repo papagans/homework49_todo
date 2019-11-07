@@ -30,4 +30,5 @@ urlpatterns = [
     path('project/<int:pk>/delete/',  ProjectDeleteView.as_view(), name='project_delete'),
     path('project/<int:pk>/update/', ProjectUpdateView.as_view(), name='project_update'),
     path('project/<int:pk>/add-todo/', TodoForProjectCreateView.as_view(), name='project_todo_create'),
+    path('todo/<int:pk>/add/', TodoCreateView.as_view(), name='todo_add'),
     ]

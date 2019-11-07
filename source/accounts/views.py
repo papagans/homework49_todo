@@ -60,7 +60,7 @@ def register_view(request):
             # отправка письма на email пользователя
             user.email_user('Регистрация на сайте localhost',
                             'Для активации перейдите по ссылке: {}'.format(activation_url))
-
+            print(activation_url)
             return redirect("webapp:todo_index")
         else:
             return render(request, 'register.html', {'form': form})
