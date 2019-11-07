@@ -1,6 +1,8 @@
-from webapp.models import Project
+from django.contrib.auth.models import User
+
+from webapp.models import Project, Todo, Team
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
-from webapp.forms import ProjectForm, ProjectTodoForm, SimpleSearchForm
+from webapp.forms import ProjectForm, ProjectTodoForm, SimpleSearchForm, TodoForm
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
@@ -50,10 +52,11 @@ class ProjectView(DetailView):
     context_key = 'project'
     model = Project
 
+
     def get_context_data(self, **kwargs):
-        # user = ProjectTodoForm('username')
         context = super().get_context_data(**kwargs)
-        context['form'] = ProjectTodoForm('created_by')
+        # context['form'] = TodoForm()
+        # context['form'] = ProjectTodoForm()
         project = context['project'].project.order_by('-date')
         self.paginate_comments_to_context(project, context)
         return context

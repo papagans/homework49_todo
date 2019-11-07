@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
-from webapp.models import StatusChoice, TypeChoice, Todo, Project, User
+from webapp.models import StatusChoice, TypeChoice, Todo, Project, User, Team
 
 
 # class TodoForm(forms.Form):
@@ -50,15 +50,15 @@ class ProjectForm(forms.ModelForm):
 
 
 class ProjectTodoForm(forms.ModelForm):
-    def __init__(self, created_by, **kwargs):
+    def __init__(self, assigned_to, **kwargs):
         super().__init__(**kwargs)
-        self.fields['created_by'].queryset = User.objects.filter(username=created_by)
-        # self.fields['project'].queryset = Project.objects.filter(id=1)
+        print(assigned_to)
+        self.fields['assigned_to'].queryset = User.objects.filter(id__in=assigned_to)
+    assigned_to = forms.ModelChoiceField(queryset=Team.objects.all())
 
     class Meta:
         model = Todo
-        fields = ['summary', 'description', 'status', 'type', 'created_by']
-        widgets = {'created_by': forms.HiddenInput()}
+        fields = ['summary', 'description', 'status', 'type', 'assigned_to']
 
 
 class SimpleSearchForm(forms.Form):
