@@ -52,9 +52,9 @@ class ProjectForm(forms.ModelForm):
 class ProjectTodoForm(forms.ModelForm):
     def __init__(self, assigned_to, **kwargs):
         super().__init__(**kwargs)
-        print(assigned_to)
         self.fields['assigned_to'].queryset = User.objects.filter(id__in=assigned_to)
-    assigned_to = forms.ModelChoiceField(queryset=Team.objects.all())
+    #     self.fields['assigned_to'].queryset = assigned_to
+    # assigned_to = forms.ModelChoiceField(queryset=Team.objects.all())
 
     class Meta:
         model = Todo
