@@ -10,8 +10,10 @@ from django.utils.http import urlencode
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
+from webapp.views.base import SessionMixin
 
-class IndexView(ListView):
+
+class IndexView(SessionMixin, ListView):
     context_object_name = 'todos'
     model = Todo
     template_name = 'todos/index.html'
@@ -25,7 +27,10 @@ class IndexView(ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_query = self.get_search_query()
-        # count = self.count()
+        self.session_count(self.request, 'todo')
+        self.session_time(self.request, 'time_index')
+        self.session_total_time(self.request)
+        print(request.session.items())
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):

@@ -1,5 +1,28 @@
 from django.views.generic import TemplateView, View
 from django.shortcuts import get_object_or_404, render, redirect
+from datetime import datetime, date, timedelta
+import time
+
+class SessionMixin:
+    DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+
+    def session_count(self, request, name):
+        count = request.session.get(name, 0)
+        request.session[name] = count + 1
+
+    def session_time(self, request, time_session):
+        now = datetime.today()
+        request.session[time_session] = str(now)
+
+    def session_total_time(self,request):
+        total1 = request.session.get('time_project')
+        total2 = request.session.get('time_index')
+
+        if total1:
+            time1 = datetime.strptime(total1, self.DATE_FORMAT)
+            time2 = datetime.strptime(total2, self.DATE_FORMAT)
+            diff = time2 - time1
+            print(diff.total_seconds())
 
 
 class DetailView(TemplateView):

@@ -10,7 +10,10 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class ProjectsView(ListView):
+from webapp.views.base import SessionMixin
+
+
+class ProjectsView(SessionMixin, ListView):
     context_object_name = 'project'
     model = Project
     template_name = 'projects/projects.html'
@@ -21,6 +24,10 @@ class ProjectsView(ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_query = self.get_search_query()
+        self.session_count(self.request, 'projects')
+        self.session_time(self.request, 'time_project')
+        self.request.session.get('tie')
+        print(request.session.items())
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
