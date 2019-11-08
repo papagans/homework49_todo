@@ -55,8 +55,18 @@ class ProjectView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['form'] = TodoForm()
-        # context['form'] = ProjectTodoForm()
+
+        # users = []
+        # project = Project.objects.get(pk=pk)
+        # # project = Project.objects.get(project__pk=task.pk)
+        # teams = Team.objects.filter(project=project)
+        # for team in teams:
+        #     users.append(team.user.pk)
+
+        users = User.objects.filter(command__project=self.object)
+
+        context['form'] = ProjectTodoForm(assigned_to=users)
+        # пше икфтср
         project = context['project'].project.order_by('-date')
         self.paginate_comments_to_context(project, context)
         return context
