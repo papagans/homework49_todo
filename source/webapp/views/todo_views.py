@@ -20,6 +20,10 @@ class IndexView(SessionMixin, ListView):
     ordering = ['-date']
     paginate_by = 5
     paginate_orphans = 1
+    users = User.objects.all()
+    result = [x.__str__() for x in users]
+    # print(users)
+    # print(result)
 
     def query(self):
         pass
@@ -27,10 +31,15 @@ class IndexView(SessionMixin, ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_query = self.get_search_query()
-        self.session_count(self.request, 'todo')
+        # self.session_count(self.request, 'todo')
+        # self.request_path(self.request)
+        self.login_page(request)
         self.session_time(self.request, 'time_index')
         self.session_total_time(self.request)
-        print(request.session.items())
+        my_print = request.session.items()
+        # print(request.session.items())
+        # print(type(my_print))
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):

@@ -4,12 +4,20 @@ from django.views.generic import View, ListView, CreateView, UpdateView, DeleteV
 from webapp.forms import StatusForm
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from webapp.views.base import SessionMixin
 
 
-class StatusesView(ListView):
+
+class StatusesView(SessionMixin, ListView):
     context_object_name = 'status'
     model = StatusChoice
     template_name = 'statuses/status.html'
+
+    def get(self, request, *args, **kwargs):
+        self.login_page(request)
+        # self.request_path(self.request)
+        # print(request.session.items())
+        return super().get(request, *args, **kwargs)
 
 
 class StatusUpdateView(LoginRequiredMixin, UpdateView):
@@ -17,6 +25,7 @@ class StatusUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'statuses/status_update.html'
     context_object_name = 'status'
     form_class = StatusForm
+
 
     def get_success_url(self):
         return reverse('webapp:status')

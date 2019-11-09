@@ -5,6 +5,7 @@ import time
 
 class SessionMixin:
     DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+    page_visit_times = {}
 
     def session_count(self, request, name):
         count = request.session.get(name, 0)
@@ -14,7 +15,15 @@ class SessionMixin:
         now = datetime.today()
         request.session[time_session] = str(now)
 
-    def session_total_time(self,request):
+
+    def login_page(self, request):
+        self.request = request
+        self.visit_times()
+        self.request.session['path'] = self.page_visit_times
+        # print(request.session.get('path'), 'REQUESTION DICT PATH')
+
+
+    def session_total_time(self, request):
         total1 = request.session.get('time_project')
         total2 = request.session.get('time_index')
 
@@ -22,7 +31,33 @@ class SessionMixin:
             time1 = datetime.strptime(total1, self.DATE_FORMAT)
             time2 = datetime.strptime(total2, self.DATE_FORMAT)
             diff = time2 - time1
-            print(diff.total_seconds())
+            # print(diff.total_seconds())
+
+    def request_path(self, request):
+        self.request = request
+
+    def visit_times(self):
+        counter = 1
+        if self.request.path in self.page_visit_times.keys():
+            self.page_visit_times[self.request.path] += 1
+        if self.request.path not in self.page_visit_times.keys():
+            self.page_visit_times[self.request.path] = counter
+        # print(self.page_visit_times)
+
+    def save_session(self):
+        pass
+
+
+
+
+        # name = request.path
+        # print(name, "name path")
+        #
+        # path_list = {}
+        # path_list[name] = count + 1
+        # print(path_list, 'PATH_LIST')
+
+
 
 
 class DetailView(TemplateView):

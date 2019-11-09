@@ -5,12 +5,19 @@ from webapp.forms import TypeForm
 from django.urls import reverse, reverse_lazy
 # from .base import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from webapp.views.base import SessionMixin
 
 
-class TypesView(ListView):
+class TypesView(SessionMixin, ListView):
     context_object_name = 'type'
     model = TypeChoice
     template_name = 'types/type.html'
+
+    def get(self, request, *args, **kwargs):
+        self.login_page(request)
+        # self.request_path(self.request)
+        print(request.session.items())
+        return super().get(request, *args, **kwargs)
 
 
 class TypeUpdateView(LoginRequiredMixin, UpdateView):
