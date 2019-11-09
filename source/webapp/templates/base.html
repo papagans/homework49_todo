@@ -96,7 +96,18 @@
       </div>
       <div class="modal-body">
         Clicks on main page: {{ request.session.todo|default:0 }}<br>
-          Time on main page: {{ request.session.time_index|default:0 }}
+          Time on main page: {{ request.session.time_index|default:0 }}<br>
+
+{#          {% for keys, values in path_counter.items %}#}
+{#              {#}
+{#                Sites visited: {{ keys }} {{ values }}<br>#}
+{#          {% endfor %}#}
+          {% for key, value in lol.items %}
+                {{ key }} {{ value }}<br/>
+          {% endfor %}
+
+{#          Users: {{ user_list }}<br>#}
+          Total visits on main mage: {{ total }}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
