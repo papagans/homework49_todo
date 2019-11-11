@@ -5,18 +5,51 @@ import time
 
 class SessionMixin:
     DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+    TIME_FORMAT = '%H:%M:%S.%f'
     page_visit_times = {}
+    time_counter = {}
 
     def session_count(self, request, name):
         count = request.session.get(name, 0)
         request.session[name] = count + 1
 
-    def session_time(self, request, time_session):
-        now = datetime.today()
-        request.session[time_session] = str(now)
+    def session_time(self, request):
+        start = datetime.now()
+        request.session[request.path] = str(start)
+        if len(self.time_counter) > 0:
+            key_name = list(self.time_counter.keys())[0]
+            prev_page_time = datetime.strptime(request.session[key_name], self.DATE_FORMAT)
+            self.get_total_time(request, key_name, start, prev_page_time)
+            self.time_counter.clear()
+        self.time_counter.update({request.path: str(start)})
+
+    def get_total_time(self, request, key, start, prev):
+        result = start - prev
+        if f'{key}_result' in request.session.keys():
+            time = request.session[f'{key}_result'].split(' ')
+            if len(time) > 1:
+                time = time[1]
+            old_time = datetime.strptime(time, self.TIME_FORMAT)
+            old_time += result
+            request.session[f'{key}_result'] = str(old_time)
+
+        print(request.session.items())
+
+            # print(request.session.items())
+        # print(request.session.items())
+
+
+
+
+        # print(request.path, 'REQUEST')
+        # request.session[request] = str(now)
+        # self.time_counter[request.path] = str(now)
+        # print(self.time_counter)
+        # print(request.session[request])
 
 
     def login_page(self, request):
+        self.session_total_time(request)
         self.request = request
         self.visit_times()
         self.request.session['path'] = self.page_visit_times
@@ -24,14 +57,25 @@ class SessionMixin:
 
 
     def session_total_time(self, request):
-        total1 = request.session.get('time_project')
+        total1 = request.session.get('time_projects')
         total2 = request.session.get('time_index')
+
+        # time1 = datetime.strptime(total1, self.DATE_FORMAT)
+        # time2 = datetime.strptime(total2, self.DATE_FORMAT)
+        # diff = time2 - time1
 
         if total1:
             time1 = datetime.strptime(total1, self.DATE_FORMAT)
             time2 = datetime.strptime(total2, self.DATE_FORMAT)
             diff = time2 - time1
-            # print(diff.total_seconds())
+
+        counter = 1
+
+        time_counter = datetime.strptime(str(datetime.now()), self.DATE_FORMAT)
+        # if self.request.path in self.time_counter.keys():
+        #     self.time_counter[self.request.path] = diff.total_seconds()
+        # if self.request.path not in self.page_visit_times.keys():
+        #     self.time_counter[self.request.path] = time_counter
 
     def request_path(self, request):
         self.request = request
