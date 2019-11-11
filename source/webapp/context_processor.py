@@ -11,16 +11,12 @@ def dict(request):
     # print(list, "LIST")
     # path_dict = request.session.get('path')
     path = request.path
-    print(path)
     path_counter = {'path_counter': request.session.get('path')}
     without_slash = {}
     for key, value in request.session.get('path').items():
         if key == '/':
             key = 'Main Page'
         without_slash[key.replace('/', '')] = value
-
-
-    print(path_counter, "DICT CONTENT_PROCESSOR")
     keys_list = ['hey', 'hey']
     new_keys = {'lol': keys_list}
     # for key in path_counter.values():

@@ -24,10 +24,11 @@ class ProjectsView(SessionMixin, ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_query = self.get_search_query()
+        # self.session_time(self.request)
         # self.request_path(request)
         self.login_page(request)
         # self.session_count(self.request, 'projects')
-        self.session_time(self.request, 'time_project')
+        self.session_time(self.request)
         # self.request.session.get('tie')
         # print(request.session.items())
         return super().get(request, *args, **kwargs)
