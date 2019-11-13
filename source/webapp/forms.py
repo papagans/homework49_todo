@@ -44,9 +44,12 @@ class TypeForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
+
     class Meta:
         model = Project
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'users']
+
 
 
 class ProjectTodoForm(forms.ModelForm):
@@ -63,3 +66,27 @@ class ProjectTodoForm(forms.ModelForm):
 
 class SimpleSearchForm(forms.Form):
     search = forms.CharField(max_length=100, required=False, label="")
+
+
+class ProjectAddUsersForm(forms.ModelForm):
+    user = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
+    # def __init__(self, user, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.fields['user'].queryset = User.objects.all()
+
+    class Meta:
+        model = User
+        fields = ['user']
+
+
+
+class KickUsersForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
+    def __init__(self, project_pk, **kwargs):
+        super().__init__(**kwargs)
+        print(project_pk,"PROJECT PK IN FORMS")
+        self.fields['users'].queryset = Team.objects.filter(project=project_pk)
+
+    class Meta:
+        model = User
+        fields = ['users']

@@ -64,9 +64,9 @@ class Todo(models.Model):
 class Team(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='Программист', related_name='command')
-    project = models.ForeignKey(Project, related_name='teams', verbose_name='Проект', on_delete=models.PROTECT)
-    created_at = models.DateField(verbose_name='Дата начала работы')
-    end_at = models.DateField(verbose_name='Дата окончания работы')
+    project = models.ForeignKey(Project, related_name='teams', verbose_name='Проект', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(verbose_name='Дата начала работы', null=True, blank=True)
+    end_at = models.DateTimeField(verbose_name='Дата окончания работы', null=True, blank=True)
 
     def __str__(self):
         return str(self.user)

@@ -219,7 +219,7 @@ class TodoUpdateView(UserPassesTestMixin, UpdateView):
 
 
 class TodoForProjectCreateView(UserPassesTestMixin, CreateView):
-    model = Todo
+    model = Team
     template_name = 'todos/create.html'
     form_class = ProjectTodoForm
 

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 
 from webapp.models import Project, Todo, Team
 from django.views.generic import View, ListView, CreateView, DeleteView, UpdateView, DetailView
-from webapp.forms import ProjectForm, ProjectTodoForm, SimpleSearchForm, TodoForm
+from webapp.forms import ProjectForm, ProjectTodoForm, SimpleSearchForm, TodoForm, ProjectAddUsersForm, KickUsersForm
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from webapp.views.base import SessionMixin
-
+from datetime import datetime, date, timedelta
 
 class ProjectsView(SessionMixin, ListView):
     context_object_name = 'project'
@@ -62,21 +62,20 @@ class ProjectView(DetailView):
     context_key = 'project'
     model = Project
 
-
     def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
         context = super().get_context_data(**kwargs)
-
-        # users = []
-        # project = Project.objects.get(pk=pk)
-        # # project = Project.objects.get(project__pk=task.pk)
-        # teams = Team.objects.filter(project=project)
-        # for team in teams:
-        #     users.append(team.user.pk)
+        users = []
+        project = pk
+        teams = Team.objects.filter(project=project, end_at=None)
+        print(teams)
+        for team in teams:
+            users.append(team.user)
+        context['teams'] = teams
 
         users = User.objects.filter(command__project=self.object)
-
+        context["users"] = users
         context['form'] = ProjectTodoForm(assigned_to=users)
-        # пше икфтср
         project = context['project'].project.order_by('-date')
         self.paginate_comments_to_context(project, context)
         return context
@@ -95,14 +94,27 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     template_name = 'projects/project_create.html'
     form_class = ProjectForm
-    #
-    # def dispatch(self, request, *args, **kwargs):
-    #     if not request.user.is_authenticated:
-    #         return redirect('accounts:login')
-    #     return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        users = form.cleaned_data.pop('users')
+        self.object = form.save()
+        # user = self.request.user
+        date = datetime.now()
+        pk = self.object.pk
+        for user in users:
+            Team.objects.create(user=user, project=self.object, created_at=date)
+        self.save_myself()
+        return redirect('webapp:project_view', pk)
+
+    def save_myself(self):
+        pk = self.kwargs.get('pk')
+        project = self.object
+        user = self.request.user
+        date = datetime.now()
+        Team.objects.create(user=user, project=project, created_at=date)
 
     def get_success_url(self):
-        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.id})
 
 
 class ProjectDeleteView(LoginRequiredMixin, DeleteView):
@@ -123,10 +135,98 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     context_object_name = 'project'
     form_class = ProjectForm
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     if not request.user.is_authenticated:
-    #         return redirect('accounts:login')
-    #     return super().dispatch(request, *args, **kwargs)
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields.pop('users')
+        return form
+
+
+    # def form_valid(self, form):
+    #     users = form.cleaned_data.pop('users')
+    #     self.object = form.save()
+    #     # user = self.request.user
+    #     date = datetime.now()
+    #     pk = self.object.pk
+    #     for user in users:
+    #         Team.objects.create(user=user, project=self.object, created_at=date)
+    #     # self.save_myself()
+    #     return redirect('webapp:project_view', pk)
+
+    # def save_myself(self):
+    #     pk = self.kwargs.get('pk')
+    #     project = self.object
+    #     user = self.request.user
+    #     date = datetime.now()
+    #     Team.objects.create(user=user, project=project, created_at=date)
 
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
+
+
+class ProjectAddUsers(LoginRequiredMixin, CreateView):
+    model = Team
+    template_name = 'projects/project_add_users.html'
+    form_class = ProjectAddUsersForm
+    # context_object_name = 'project'
+
+    def form_valid(self, form):
+        users = form.cleaned_data.pop('user')
+        project = self.get_project()
+        print(users, "users")
+        print(project, "PROJECT")
+        date = datetime.now()
+        # pk = self.object.pk
+        for user in users:
+            Team.objects.create(user=user, project=project, created_at=date)
+        return redirect('webapp:project_view', project.pk)
+
+    # def form_valid(self, form):
+    #     project = self.get_project()
+    #     print(project)
+    #     pk = self.kwargs.get('pk')
+    #     issue = project.teams.create(**form.cleaned_data)
+    #     issue.created_at = datetime.now()
+    #     issue.project.pk = pk
+    #     issue.save()
+    #     return redirect('webapp:project_view', pk)
+
+
+
+    def get_success_url(self):
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
+
+
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        context = super().get_context_data(**kwargs)
+        project = get_object_or_404(Project.objects.all().filter(id=pk))
+        context['project'] = project
+        return context
+
+    def get_project(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Project, pk=pk)
+
+
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    model = Project
+    template_name = 'projects/user_kick.html'
+    context_object_name = 'project'
+    form_class = KickUsersForm
+
+    def form_valid(self, form):
+        users = form.cleaned_data.pop('users')
+        self.object = form.save()
+        # user = self.request.user
+        date = datetime.now()
+        pk = self.object.pk
+        for user in users:
+            Team.objects.create(user=user, project=self.object, end_at=date)
+        return redirect('webapp:project_view', pk)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        pk = self.kwargs.get('pk')
+        print(pk)
+        kwargs['project_pk'] = pk
+        return kwargs

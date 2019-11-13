@@ -19,12 +19,19 @@
    <div class="container">
        <h1>{{ project.name }}</h1>
        <li><a href="{% url 'webapp:project_update' project.pk %}">Edit Project</a></li>
-    <li><a href="{% url 'webapp:project_delete' project.pk %}">Delete Project</a></li>
-   <li><a href="{% url 'webapp:todo_add' project.pk %}"> Add Todo</a></li>
+       <li><a href="{% url 'webapp:project_delete' project.pk %}">Delete Project</a></li>
+       <li><a href="{% url 'webapp:todo_add' project.pk %}"> Add Todo</a></li>
+       <li><a href="{% url 'webapp:project_add_users' project.pk %}">Add Users</a></li>
+       <li><a href="{% url 'webapp:kick_users' project.pk %}">Kick Users</a></li>
        <p>Date: <b>{{ project.created_at }}<br/></b>
        <p>Description: <b>{{ project.description }}<br/></b>
        Status: <b>{{ project.status }}</b><br/>
-       <h3>Todos:</h3>
+
+   <p><h2>Users:</h2> <b>
+       {% for team in teams %}
+       <p> User: {{ team.user.username }}
+           (Time joined: {{ team.created_at }})<br/> <a href="{% url 'webapp:project_delete' project.pk %}">Delete User</a></p>
+        {% endfor %}
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}

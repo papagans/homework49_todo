@@ -3,8 +3,8 @@ from django.urls import path
 from webapp.views import TodoCreateView, TodoUpdateView, TodoDeleteView, \
     StatusesView, TypesView, StatusUpdateView, TypeUpdateView, StatusDeleteView, \
     StatusCreateView, TypeDeleteView, TypeCreateView, IndexView, TodoView, ProjectsView, ProjectView, ProjectCreateView, \
-    ProjectUpdateView, ProjectDeleteView, TodoForProjectCreateView
-
+    ProjectUpdateView, ProjectDeleteView, TodoForProjectCreateView, ProjectAddUsers
+from webapp.views.project_views import UserUpdateView
 
 app_name ='webapp'
 
@@ -31,4 +31,6 @@ urlpatterns = [
     path('project/<int:pk>/update/', ProjectUpdateView.as_view(), name='project_update'),
     path('project/<int:pk>/add-todo/', TodoForProjectCreateView.as_view(), name='project_todo_create'),
     path('todo/<int:pk>/add/', TodoCreateView.as_view(), name='todo_add'),
+    path('users/<int:pk>/add/', ProjectAddUsers.as_view(), name='project_add_users'),
+    path('users/<int:pk>/delete/',  UserUpdateView.as_view(), name='kick_users'),
     ]
