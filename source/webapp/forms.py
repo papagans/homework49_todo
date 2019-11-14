@@ -45,6 +45,11 @@ class TypeForm(forms.ModelForm):
 
 class ProjectForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
+    def __init__(self, project_pk, my_self, **kwargs):
+        super().__init__(**kwargs)
+        print(project_pk, 'PROJECTPK')
+        # self.fields['user'].queryset = Team.objects.filter(project__id=project_pk)
+        self.fields['users'].queryset = User.objects.exclude(username=my_self)
 
     class Meta:
         model = Project
@@ -70,23 +75,21 @@ class SimpleSearchForm(forms.Form):
 
 class ProjectAddUsersForm(forms.ModelForm):
     user = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
-    # def __init__(self, user, **kwargs):
-    #     super().__init__(**kwargs)
-    #     self.fields['user'].queryset = User.objects.all()
 
     class Meta:
         model = User
         fields = ['user']
 
 
-
 class KickUsersForm(forms.ModelForm):
-    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), required=False)
-    def __init__(self, project_pk, **kwargs):
+    user = forms.ModelMultipleChoiceField(queryset=Team.objects.all(), required=False)
+
+    def __init__(self, project_pk, my_self, **kwargs):
         super().__init__(**kwargs)
-        print(project_pk,"PROJECT PK IN FORMS")
-        self.fields['users'].queryset = Team.objects.filter(project=project_pk)
+        print(my_self, 'My SELF')
+        # self.fields['user'].queryset = Team.objects.filter(project__id=project_pk)
+        self.fields['user'].queryset = Team.objects.filter(project=project_pk, end_at=None).exclude(user=my_self)
 
     class Meta:
         model = User
-        fields = ['users']
+        fields = ['user']

@@ -68,11 +68,9 @@ class ProjectView(DetailView):
         users = []
         project = pk
         teams = Team.objects.filter(project=project, end_at=None)
-        print(teams)
         for team in teams:
             users.append(team.user)
         context['teams'] = teams
-
         users = User.objects.filter(command__project=self.object)
         context["users"] = users
         context['form'] = ProjectTodoForm(assigned_to=users)
@@ -97,6 +95,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         users = form.cleaned_data.pop('users')
+        myself = self.request.user
         self.object = form.save()
         # user = self.request.user
         date = datetime.now()
@@ -115,6 +114,13 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.id})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        pk = self.kwargs.get('pk')
+        kwargs['project_pk'] = pk
+        kwargs['my_self'] = self.request.user
+        return kwargs
 
 
 class ProjectDeleteView(LoginRequiredMixin, DeleteView):
@@ -172,29 +178,15 @@ class ProjectAddUsers(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         users = form.cleaned_data.pop('user')
         project = self.get_project()
-        print(users, "users")
-        print(project, "PROJECT")
         date = datetime.now()
         # pk = self.object.pk
         for user in users:
             Team.objects.create(user=user, project=project, created_at=date)
+            # print(Team.objects.all().filter(project=pk), "Created TEAM")
         return redirect('webapp:project_view', project.pk)
-
-    # def form_valid(self, form):
-    #     project = self.get_project()
-    #     print(project)
-    #     pk = self.kwargs.get('pk')
-    #     issue = project.teams.create(**form.cleaned_data)
-    #     issue.created_at = datetime.now()
-    #     issue.project.pk = pk
-    #     issue.save()
-    #     return redirect('webapp:project_view', pk)
-
-
 
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
-
 
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get('pk')
@@ -208,25 +200,44 @@ class ProjectAddUsers(LoginRequiredMixin, CreateView):
         return get_object_or_404(Project, pk=pk)
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-    model = Project
+class UserUpdateView(LoginRequiredMixin, CreateView):
+    model = Team
     template_name = 'projects/user_kick.html'
-    context_object_name = 'project'
+    # context_object_name = 'project'
     form_class = KickUsersForm
 
     def form_valid(self, form):
-        users = form.cleaned_data.pop('users')
-        self.object = form.save()
-        # user = self.request.user
+        users = form.cleaned_data.pop('user')
+
+        project = self.get_project()
+        print(users, "users")
+        print(project, "PROJECT")
         date = datetime.now()
-        pk = self.object.pk
+        print(date)
+        # pk = self.object.pk
         for user in users:
-            Team.objects.create(user=user, project=self.object, end_at=date)
-        return redirect('webapp:project_view', pk)
+            print('user: ', user.id)
+            Team.objects.filter(user=user.user, project=project).update(end_at=date)
+        return redirect('webapp:project_view', project.pk)
+
+    def get_success_url(self):
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        context = super().get_context_data(**kwargs)
+        project = get_object_or_404(Project.objects.all().filter(id=pk))
+        context['project'] = project
+        # context['form'] = KickUsersForm(project.pk)
+        return context
+
+    def get_project(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Project, pk=pk)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         pk = self.kwargs.get('pk')
-        print(pk)
         kwargs['project_pk'] = pk
+        kwargs['my_self'] = self.request.user
         return kwargs
