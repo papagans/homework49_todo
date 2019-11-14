@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from webapp.views.base import SessionMixin
 from datetime import datetime, date, timedelta
@@ -88,11 +88,12 @@ class ProjectView(DetailView):
         context['is_paginated'] = page.has_other_pages()
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(PermissionRequiredMixin, CreateView):
     model = Project
     template_name = 'projects/project_create.html'
     form_class = ProjectForm
-
+    permission_required = 'webapp.add_project'
+    permission_denied_message = 'Ну и какого хуя ты сюда лезешь?!'
     def form_valid(self, form):
         users = form.cleaned_data.pop('users')
         myself = self.request.user
@@ -135,11 +136,13 @@ class ProjectDeleteView(LoginRequiredMixin, DeleteView):
         pass
 
 
-class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+class ProjectUpdateView(PermissionRequiredMixin, UpdateView):
     model = Project
     template_name = 'projects/project_update.html'
     context_object_name = 'project'
     form_class = ProjectForm
+    permission_required = 'webapp.edit_project'
+    permission_denied_message = 'Ну и какого хуя ты сюда лезешь?!'
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=None)
@@ -169,11 +172,12 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
 
-class ProjectAddUsers(LoginRequiredMixin, CreateView):
+class ProjectAddUsers(PermissionRequiredMixin, CreateView):
     model = Team
     template_name = 'projects/project_add_users.html'
     form_class = ProjectAddUsersForm
-    # context_object_name = 'project'
+    permission_required = 'webapp.add_team'
+    permission_denied_message = 'Ну и какого хуя ты сюда лезешь?!'
 
     def form_valid(self, form):
         users = form.cleaned_data.pop('user')
@@ -200,11 +204,13 @@ class ProjectAddUsers(LoginRequiredMixin, CreateView):
         return get_object_or_404(Project, pk=pk)
 
 
-class UserUpdateView(LoginRequiredMixin, CreateView):
+class UserUpdateView(PermissionRequiredMixin, CreateView):
     model = Team
     template_name = 'projects/user_kick.html'
     # context_object_name = 'project'
     form_class = KickUsersForm
+    permission_required = 'webapp.add_team'
+    permission_denied_message = 'Ну и какого хуя ты сюда лезешь?!'
 
     def form_valid(self, form):
         users = form.cleaned_data.pop('user')

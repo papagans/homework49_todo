@@ -43,8 +43,10 @@
           Add+
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% if perms.webapp.add_project %}
           <a class="dropdown-item" href="{% url 'webapp:project_add' %}">Add Project</a>
-          <a class="dropdown-item" href="{% url 'webapp:todo_add' %}">Add ToDo</a>
+            {% endif %}
+{#          <a class="dropdown-item" href="{% url 'webapp:todo_add' %}">Add ToDo</a>#}
             <a class="dropdown-item" href="{% url 'webapp:status_add' %}">Add Status</a>
           <a class="dropdown-item" href="{% url 'webapp:type_add' %}">Add Type</a>
         </div>

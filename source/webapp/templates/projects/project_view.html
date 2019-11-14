@@ -17,12 +17,16 @@
 
 {% block content %}
    <div class="container">
+   {% if perms.webapp.add_project %}
        <h1>{{ project.name }}</h1>
        <li><a href="{% url 'webapp:project_update' project.pk %}">Edit Project</a></li>
        <li><a href="{% url 'webapp:project_delete' project.pk %}">Delete Project</a></li>
+   {% endif %}
        <li><a href="{% url 'webapp:todo_add' project.pk %}"> Add Todo</a></li>
+       {% if perms.webapp.add_team %}
        <li><a href="{% url 'webapp:project_add_users' project.pk %}">Add Users</a></li>
        <li><a href="{% url 'webapp:kick_users' project.pk %}">Kick Users</a></li>
+        {% endif %}
        <p>Date: <b>{{ project.created_at }}<br/></b>
        <p>Description: <b>{{ project.description }}<br/></b>
        Status: <b>{{ project.status }}</b><br/>
