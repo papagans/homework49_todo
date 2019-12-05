@@ -35,18 +35,6 @@ class SessionMixin:
 
         print(request.session.items())
 
-            # print(request.session.items())
-        # print(request.session.items())
-
-
-
-
-        # print(request.path, 'REQUEST')
-        # request.session[request] = str(now)
-        # self.time_counter[request.path] = str(now)
-        # print(self.time_counter)
-        # print(request.session[request])
-
 
     def login_page(self, request):
         self.session_total_time(request)
@@ -69,14 +57,6 @@ class SessionMixin:
             time2 = datetime.strptime(total2, self.DATE_FORMAT)
             diff = time2 - time1
 
-        counter = 1
-
-        time_counter = datetime.strptime(str(datetime.now()), self.DATE_FORMAT)
-        # if self.request.path in self.time_counter.keys():
-        #     self.time_counter[self.request.path] = diff.total_seconds()
-        # if self.request.path not in self.page_visit_times.keys():
-        #     self.time_counter[self.request.path] = time_counter
-
     def request_path(self, request):
         self.request = request
 
@@ -86,22 +66,6 @@ class SessionMixin:
             self.page_visit_times[self.request.path] += 1
         if self.request.path not in self.page_visit_times.keys():
             self.page_visit_times[self.request.path] = counter
-        # print(self.page_visit_times)
-
-    def save_session(self):
-        pass
-
-
-
-
-        # name = request.path
-        # print(name, "name path")
-        #
-        # path_list = {}
-        # path_list[name] = count + 1
-        # print(path_list, 'PATH_LIST')
-
-
 
 
 class DetailView(TemplateView):

@@ -27,4 +27,5 @@ def dict(request):
 def sessions(request):
     total = {"total": request.session.get('time_index')}
     # print(total,'Total')
+    print(request.session.items())
     return total
